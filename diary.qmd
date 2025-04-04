@@ -1,0 +1,6 @@
+---
+title: "Miya(Mia) Huang"
+image: "images/IMG_7019.JPG"
+about:
+    template: jolla
+---

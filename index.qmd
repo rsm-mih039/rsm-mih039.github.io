@@ -1,0 +1,13 @@
+---
+title: "Miya(Mia) Huang"
+image: "images/IMG_7019.JPG"
+about:
+    template: jolla
+    links:
+        - icon: envelope
+          href: mailto:miyahuang0311@gmail.com
+        - icon: linkedin
+          href: https://www.linkedin.com/in/miya-huang-887472322/
+---
+
+Welcome!
