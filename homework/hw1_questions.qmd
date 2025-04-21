@@ -46,7 +46,7 @@ The bar plots show the distribution of key categorical variables in the dataset.
 The histograms of numeric variables show that both donation-related and historical giving behaviors are **highly skewed to the right**. Most donation amounts are under \$100, and both **highest past donation** and **frequency of past donations** exhibit long right tails, suggesting that a small subset of donors account for a disproportionately large share of past giving. The **recency variable (`mrm2`)** also shows many donors who haven’t contributed recently, with the most frequent values clustered between 0 and 12 months.
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -183,7 +183,7 @@ As an ad hoc test of the randomization mechanism, I provide a series of tests th
 
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")  
+df = pd.read_stata("../data/karlan_list_2007.dta")  
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -279,7 +279,7 @@ First, I analyze whether matched donations lead to an increased response rate of
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 donation_rates = df.groupby('treatment')['gave'].mean()
 labels = ['Control', 'Treatment']
@@ -305,7 +305,7 @@ The treatment group has a higher donation rate (2.20%) than the control group (1
 
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 import numpy as np
 import pandas as pd
@@ -353,7 +353,7 @@ To further support this finding, I estimate a probit model where the outcome is 
 Taken together, the results provide consistent evidence that even modest psychological framing—such as mentioning that a donation will be matched—can meaningfully increase donor response.
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 from statsmodels.discrete.discrete_model import Probit
 import statsmodels.api as sm
@@ -372,7 +372,7 @@ Next, I assess the effectiveness of different sizes of matched donations on the 
 I conduct three pairwise t-tests comparing donation rates between match ratios (2:1 vs. 1:1, 3:1 vs. 1:1, and 3:1 vs. 2:1). The differences in mean donation rates across these groups are all very small and none are statistically significant at the 5% level. All p-values are well above 0.30. This suggests that the presence of a match itself may be sufficient to motivate behavior, while increasing the match ratio beyond 1:1 offers little incremental benefit.
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 import numpy as np
 import pandas as pd
@@ -415,7 +415,7 @@ To determine whether higher match ratios influence the likelihood of donating, I
 
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 treat_df = df[df["ratio"].isin([1, 2, 3])].copy()
 
@@ -439,7 +439,7 @@ To assess whether increasing the match ratio leads to higher response, I compare
 
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 rate_1 = df[(df["treatment"] == 1) & (df["ratio"] == 1)]["gave"].mean()
 rate_2 = df[(df["treatment"] == 1) & (df["ratio"] == 2)]["gave"].mean()
@@ -477,7 +477,7 @@ I regress donation amount on the match ratio using the treatment group, with 1:1
 This suggests that higher match ratios do not meaningfully affect how much people donate, even if they influence whether they donate at all.
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 import statsmodels.formula.api as smf
 
@@ -501,7 +501,7 @@ I regress donation amount on the match ratio using only individuals who made a d
 These differences are small and statistically insignificant. This suggests that once someone decides to donate, the size of the match does not influence how much they give.
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 import statsmodels.formula.api as smf
 
@@ -521,7 +521,7 @@ The histograms display the distribution of donation amounts among individuals wh
 The treatment group's average donation is **\$43.87**, while the control group's average is slightly higher at **\$45.54**. Despite the visual and numerical difference, the gap is small and not statistically significant, reinforcing earlier regression results that **match offers influence whether people give, but not how much they give** once they’ve decided to donate.
 ```{python}
 import pandas as pd
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -574,7 +574,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 np.random.seed(123)
 
 control_data = df[(df["treatment"] == 0) & (df["amount"] > 0)]["amount"]
@@ -619,7 +619,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-df = pd.read_stata("data/karlan_list_2007.dta")
+df = pd.read_stata("../data/karlan_list_2007.dta")
 np.random.seed(123)
 
 control_data = df[(df["treatment"] == 0) & (df["amount"] > 0)]["amount"].values

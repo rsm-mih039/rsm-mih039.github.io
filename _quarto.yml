@@ -9,8 +9,10 @@ website:
         text: Home
       - href: resume.qmd
         text: Resume
-      - href: hw1_questions.qmd
-        text: HW1
+      - text : Homework
+        menu:
+          - href: homework/hw1_questions.qmd
+            text: HW1
 
 format:
   html:
