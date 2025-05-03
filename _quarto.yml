@@ -13,6 +13,8 @@ website:
         menu:
           - href: homework/hw1_questions.qmd
             text: HW1
+          - href: homework/hw2_questions.qmd
+            text: HW2
 
 format:
   html:
