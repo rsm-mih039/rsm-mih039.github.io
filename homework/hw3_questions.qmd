@@ -2,7 +2,9 @@
 title: "Multinomial Logit Model"
 author: "Miya Huang"
 date: today
-format: pdf
+format:
+  html: default
+  pdf: default
 jupyter: python3
 ---
 
