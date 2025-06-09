@@ -333,7 +333,7 @@ window.Quarto = {
 <section id="custom-vs.-built-in-k-means-a-side-by-side-comparison" class="level3">
 <h3 class="anchored" data-anchor-id="custom-vs.-built-in-k-means-a-side-by-side-comparison">Custom vs.&nbsp;Built-in K-Means: A Side-by-Side Comparison</h3>
 <p>To evaluate the correctness and effectiveness of the custom K-Means algorithm I implemented, I compare its performance against the built-in <code>KMeans</code> implementation from the <code>scikit-learn</code> library. Specifically, I use <span class="math inline">\(K = 3\)</span> clusters and assess the clustering results using two metrics: <strong>Within-Cluster Sum of Squares (WCSS)</strong> and <strong>Silhouette Score</strong>.</p>
-<div id="50ab3b2d" class="cell" data-execution_count="1">
+<div id="6fdac565" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -422,7 +422,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="3d2517a1" class="cell" data-execution_count="2">
+<div id="ff24be2a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> penguins[[<span class="st">"bill_length_mm"</span>, <span class="st">"flipper_length_mm"</span>]].values</span>
@@ -432,7 +432,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Here is the self-written function for K-Means, which initializes centroids randomly and iteratively updates them until convergence. The logic matches the standard K-Means algorithm discussed above.</p>
-<div id="a025a7e7" class="cell" data-execution_count="3">
+<div id="55d85cbc" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -455,7 +455,7 @@ window.Quarto = {
 </details>
 </div>
 <p>We now apply both the custom implementation and the built-in <code>KMeans</code> from scikit-learn to the same standardized dataset, using 3 clusters.</p>
-<div id="41f3015d" class="cell" data-execution_count="4">
+<div id="288ad681" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
@@ -473,7 +473,7 @@ window.Quarto = {
 <li>Centroids are marked with black diamonds (custom) and red diamonds (built-in).</li>
 </ul>
 <p>The plots confirm that both methods yield identical clustering structures, with near-perfect agreement in cluster boundaries and centroid positions.</p>
-<div id="e5164180" class="cell" data-execution_count="5">
+<div id="756df9de" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -511,7 +511,7 @@ window.Quarto = {
 <li><strong>WCSS</strong>: Measures how compact the clusters are.</li>
 <li><strong>Silhouette Score</strong>: Combines cohesion and separation; higher is better.</li>
 </ul>
-<div id="78d654a9" class="cell" data-execution_count="6">
+<div id="370dfff1" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
@@ -550,7 +550,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 <li><strong>Silhouette Score</strong>: Balances cohesion and separation, with values closer to 1 indicating better-defined clusters.</li>
 </ul>
 <p>We test <span class="math inline">\(K = 2\)</span> to <span class="math inline">\(K = 7\)</span> and plot both metrics to look for the “elbow” in the WCSS curve and the peak in the silhouette scores.</p>
-<div id="e0ff3310" class="cell" data-execution_count="7">
+<div id="7332fa67" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>k_values <span class="op">=</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">8</span>)</span>
@@ -612,7 +612,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 <section id="introduction-and-dataset-overview" class="level3">
 <h3 class="anchored" data-anchor-id="introduction-and-dataset-overview">Introduction and Dataset Overview</h3>
 <p>We begin by loading the dataset and inspecting its structure. Our goal is to identify the response variable and the candidate predictors to be used in the driver analysis.</p>
-<div id="da5f8f9c" class="cell" data-execution_count="8">
+<div id="f94c0875" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"../data/data_for_drivers_analysis.csv"</span>)</span>
@@ -779,7 +779,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 <li><strong>Standardized regression coefficients</strong> come from fitting a linear model on standardized data and show the relative impact per standard deviation change.</li>
 <li><strong>Usefulness</strong> quantifies the drop in <span class="math inline">\(R^2\)</span> when each variable is removed from a full linear model.</li>
 </ul>
-<div id="1fad3609" class="cell" data-execution_count="9">
+<div id="fa8cc2c2" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
@@ -814,7 +814,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 </details>
 </div>
 <p>The table below summarizes these results:</p>
-<div id="928ba759" class="cell" data-execution_count="10">
+<div id="12f4ba04" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame({</span>
@@ -912,7 +912,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 <p>To approximate Johnson’s relative weights without using unstable packages, I use a PCA-based projection method that decomposes variance and reweights predictors based on their contribution to model <span class="math inline">\(R^2\)</span>.</p>
 <p>This gives us a stable and interpretable measure of relative variable importance, conceptually aligned with the Shapley-based decomposition.</p>
 <p>Together, these three approaches reflect how variables contribute to prediction in nonlinear, interactive, and multicollinear contexts.</p>
-<div id="1c1a903e" class="cell" data-execution_count="11">
+<div id="36bd186f" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
@@ -948,11 +948,11 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 <span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>johnson_weight <span class="op">=</span> pd.Series(johnson_weight, index<span class="op">=</span>X.columns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>  7%|=                   | 166/2553 [00:11&lt;02:38]         7%|=                   | 183/2553 [00:12&lt;02:35]         8%|==                  | 197/2553 [00:13&lt;02:35]         8%|==                  | 212/2553 [00:14&lt;02:34]         9%|==                  | 226/2553 [00:15&lt;02:34]         9%|==                  | 242/2553 [00:16&lt;02:32]        10%|==                  | 258/2553 [00:17&lt;02:31]        11%|==                  | 274/2553 [00:18&lt;02:29]        11%|==                  | 289/2553 [00:19&lt;02:28]        12%|==                  | 306/2553 [00:20&lt;02:26]        13%|===                 | 320/2553 [00:21&lt;02:26]        13%|===                 | 335/2553 [00:22&lt;02:25]        14%|===                 | 353/2553 [00:23&lt;02:23]        14%|===                 | 369/2553 [00:24&lt;02:22]        15%|===                 | 385/2553 [00:25&lt;02:20]        16%|===                 | 402/2553 [00:26&lt;02:19]        16%|===                 | 418/2553 [00:27&lt;02:17]        17%|===                 | 434/2553 [00:28&lt;02:16]        18%|====                | 449/2553 [00:29&lt;02:15]        18%|====                | 468/2553 [00:30&lt;02:13]        19%|====                | 485/2553 [00:31&lt;02:12]        19%|====                | 497/2553 [00:32&lt;02:12]        20%|====                | 512/2553 [00:33&lt;02:11]        21%|====                | 526/2553 [00:34&lt;02:11]        21%|====                | 542/2553 [00:35&lt;02:09]        22%|====                | 558/2553 [00:36&lt;02:08]        22%|====                | 572/2553 [00:37&lt;02:08]        23%|=====               | 586/2553 [00:38&lt;02:07]        24%|=====               | 602/2553 [00:39&lt;02:06]        24%|=====               | 619/2553 [00:40&lt;02:04]        25%|=====               | 633/2553 [00:41&lt;02:04]        25%|=====               | 648/2553 [00:42&lt;02:03]        26%|=====               | 664/2553 [00:43&lt;02:02]        27%|=====               | 682/2553 [00:44&lt;02:00]        27%|=====               | 698/2553 [00:45&lt;01:59]        28%|======              | 713/2553 [00:46&lt;01:58]        29%|======              | 729/2553 [00:47&lt;01:57]        29%|======              | 745/2553 [00:48&lt;01:56]        30%|======              | 760/2553 [00:49&lt;01:55]        30%|======              | 774/2553 [00:50&lt;01:54]        31%|======              | 788/2553 [00:51&lt;01:54]        32%|======              | 807/2553 [00:52&lt;01:52]        32%|======              | 821/2553 [00:53&lt;01:51]        33%|=======             | 836/2553 [00:54&lt;01:50]        33%|=======             | 853/2553 [00:55&lt;01:49]        34%|=======             | 869/2553 [00:56&lt;01:48]        35%|=======             | 885/2553 [00:57&lt;01:47]        35%|=======             | 900/2553 [00:58&lt;01:46]        36%|=======             | 915/2553 [00:59&lt;01:45]        36%|=======             | 927/2553 [01:00&lt;01:45]        37%|=======             | 943/2553 [01:01&lt;01:44]        38%|========            | 958/2553 [01:02&lt;01:43]        38%|========            | 972/2553 [01:03&lt;01:42]        39%|========            | 989/2553 [01:04&lt;01:41]        39%|========            | 1003/2553 [01:05&lt;01:40]        40%|========            | 1018/2553 [01:06&lt;01:39]        41%|========            | 1034/2553 [01:07&lt;01:38]        41%|========            | 1049/2553 [01:08&lt;01:37]        42%|========            | 1064/2553 [01:09&lt;01:36]        42%|========            | 1079/2553 [01:10&lt;01:35]        43%|=========           | 1094/2553 [01:11&lt;01:34]        43%|=========           | 1109/2553 [01:12&lt;01:33]        44%|=========           | 1125/2553 [01:13&lt;01:32]        45%|=========           | 1140/2553 [01:14&lt;01:31]        45%|=========           | 1156/2553 [01:15&lt;01:30]        46%|=========           | 1172/2553 [01:16&lt;01:29]        47%|=========           | 1188/2553 [01:17&lt;01:28]        47%|=========           | 1205/2553 [01:18&lt;01:27]        48%|==========          | 1222/2553 [01:19&lt;01:26]        48%|==========          | 1235/2553 [01:20&lt;01:25]        49%|==========          | 1251/2553 [01:21&lt;01:24]        50%|==========          | 1266/2553 [01:22&lt;01:23]        50%|==========          | 1282/2553 [01:23&lt;01:22]        51%|==========          | 1298/2553 [01:24&lt;01:21]        52%|==========          | 1315/2553 [01:25&lt;01:20]        52%|==========          | 1331/2553 [01:26&lt;01:18]        53%|===========         | 1347/2553 [01:27&lt;01:17]        53%|===========         | 1362/2553 [01:28&lt;01:16]        54%|===========         | 1380/2553 [01:29&lt;01:15]        55%|===========         | 1396/2553 [01:30&lt;01:14]        55%|===========         | 1414/2553 [01:31&lt;01:13]        56%|===========         | 1430/2553 [01:32&lt;01:12]        57%|===========         | 1448/2553 [01:33&lt;01:10]        57%|===========         | 1465/2553 [01:34&lt;01:09]        58%|============        | 1483/2553 [01:35&lt;01:08]        59%|============        | 1500/2553 [01:36&lt;01:07]        59%|============        | 1516/2553 [01:37&lt;01:06]        60%|============        | 1534/2553 [01:38&lt;01:05]        61%|============        | 1553/2553 [01:39&lt;01:03]        62%|============        | 1572/2553 [01:40&lt;01:02]        62%|============        | 1590/2553 [01:41&lt;01:01]        63%|=============       | 1606/2553 [01:42&lt;01:00]        64%|=============       | 1622/2553 [01:43&lt;00:59]        64%|=============       | 1640/2553 [01:44&lt;00:57]        65%|=============       | 1657/2553 [01:45&lt;00:56]        66%|=============       | 1675/2553 [01:46&lt;00:55]        66%|=============       | 1692/2553 [01:47&lt;00:54]        67%|=============       | 1711/2553 [01:48&lt;00:53]        68%|==============      | 1728/2553 [01:49&lt;00:52]        68%|==============      | 1744/2553 [01:50&lt;00:51]        69%|==============      | 1763/2553 [01:51&lt;00:49]        70%|==============      | 1779/2553 [01:52&lt;00:48]        70%|==============      | 1796/2553 [01:53&lt;00:47]        71%|==============      | 1812/2553 [01:54&lt;00:46]        72%|==============      | 1830/2553 [01:55&lt;00:45]        72%|==============      | 1847/2553 [01:56&lt;00:44]        73%|===============     | 1863/2553 [01:57&lt;00:43]        74%|===============     | 1881/2553 [01:58&lt;00:42]        74%|===============     | 1896/2553 [01:59&lt;00:41]        75%|===============     | 1911/2553 [02:00&lt;00:40]        75%|===============     | 1926/2553 [02:01&lt;00:39]        76%|===============     | 1945/2553 [02:02&lt;00:38]        77%|===============     | 1960/2553 [02:03&lt;00:37]        77%|===============     | 1977/2553 [02:04&lt;00:36]        78%|================    | 1992/2553 [02:05&lt;00:35]        79%|================    | 2011/2553 [02:06&lt;00:33]        79%|================    | 2026/2553 [02:07&lt;00:33]        80%|================    | 2043/2553 [02:08&lt;00:31]        81%|================    | 2063/2553 [02:09&lt;00:30]        82%|================    | 2083/2553 [02:10&lt;00:29]        82%|================    | 2103/2553 [02:11&lt;00:28]        83%|=================   | 2122/2553 [02:12&lt;00:26]        84%|=================   | 2137/2553 [02:13&lt;00:25]        84%|=================   | 2156/2553 [02:14&lt;00:24]        85%|=================   | 2173/2553 [02:15&lt;00:23]        86%|=================   | 2192/2553 [02:16&lt;00:22]        87%|=================   | 2213/2553 [02:17&lt;00:21]        87%|=================   | 2230/2553 [02:18&lt;00:19]        88%|==================  | 2249/2553 [02:19&lt;00:18]        89%|==================  | 2268/2553 [02:20&lt;00:17]        90%|==================  | 2286/2553 [02:21&lt;00:16]        90%|==================  | 2304/2553 [02:22&lt;00:15]        91%|==================  | 2324/2553 [02:23&lt;00:14]        92%|==================  | 2341/2553 [02:24&lt;00:13]        92%|==================  | 2361/2553 [02:25&lt;00:11]        93%|=================== | 2381/2553 [02:26&lt;00:10]        94%|=================== | 2400/2553 [02:27&lt;00:09]        95%|=================== | 2419/2553 [02:28&lt;00:08]        96%|=================== | 2439/2553 [02:29&lt;00:06]        96%|=================== | 2458/2553 [02:30&lt;00:05]        97%|=================== | 2476/2553 [02:31&lt;00:04]        98%|===================| 2495/2553 [02:32&lt;00:03]        98%|===================| 2511/2553 [02:33&lt;00:02]        99%|===================| 2526/2553 [02:34&lt;00:01]       100%|===================| 2544/2553 [02:35&lt;00:00]       </code></pre>
+<pre><code>  7%|=                   | 172/2553 [00:11&lt;02:32]         7%|=                   | 189/2553 [00:12&lt;02:30]         8%|==                  | 203/2553 [00:13&lt;02:30]         9%|==                  | 220/2553 [00:14&lt;02:28]         9%|==                  | 235/2553 [00:15&lt;02:27]        10%|==                  | 251/2553 [00:16&lt;02:26]        10%|==                  | 267/2553 [00:17&lt;02:25]        11%|==                  | 284/2553 [00:18&lt;02:23]        12%|==                  | 300/2553 [00:19&lt;02:22]        12%|==                  | 316/2553 [00:20&lt;02:21]        13%|===                 | 332/2553 [00:21&lt;02:20]        14%|===                 | 349/2553 [00:22&lt;02:18]        14%|===                 | 367/2553 [00:23&lt;02:16]        15%|===                 | 384/2553 [00:24&lt;02:15]        16%|===                 | 401/2553 [00:25&lt;02:14]        16%|===                 | 419/2553 [00:26&lt;02:12]        17%|===                 | 435/2553 [00:27&lt;02:11]        18%|====                | 451/2553 [00:28&lt;02:10]        18%|====                | 471/2553 [00:29&lt;02:08]        19%|====                | 488/2553 [00:30&lt;02:06]        20%|====                | 501/2553 [00:31&lt;02:06]        20%|====                | 518/2553 [00:32&lt;02:05]        21%|====                | 532/2553 [00:33&lt;02:05]        22%|====                | 549/2553 [00:34&lt;02:04]        22%|====                | 566/2553 [00:35&lt;02:02]        23%|=====               | 582/2553 [00:36&lt;02:01]        23%|=====               | 596/2553 [00:37&lt;02:01]        24%|=====               | 615/2553 [00:38&lt;01:59]        25%|=====               | 630/2553 [00:39&lt;01:59]        25%|=====               | 645/2553 [00:40&lt;01:58]        26%|=====               | 661/2553 [00:41&lt;01:57]        27%|=====               | 680/2553 [00:42&lt;01:55]        27%|=====               | 697/2553 [00:43&lt;01:54]        28%|======              | 712/2553 [00:44&lt;01:53]        29%|======              | 729/2553 [00:45&lt;01:52]        29%|======              | 746/2553 [00:46&lt;01:51]        30%|======              | 761/2553 [00:47&lt;01:50]        30%|======              | 777/2553 [00:48&lt;01:49]        31%|======              | 792/2553 [00:49&lt;01:48]        32%|======              | 812/2553 [00:50&lt;01:47]        32%|======              | 826/2553 [00:51&lt;01:46]        33%|=======             | 843/2553 [00:52&lt;01:45]        34%|=======             | 858/2553 [00:53&lt;01:44]        34%|=======             | 876/2553 [00:54&lt;01:43]        35%|=======             | 890/2553 [00:55&lt;01:42]        35%|=======             | 904/2553 [00:56&lt;01:42]        36%|=======             | 919/2553 [00:57&lt;01:41]        36%|=======             | 931/2553 [00:58&lt;01:41]        37%|=======             | 949/2553 [00:59&lt;01:39]        38%|========            | 966/2553 [01:00&lt;01:38]        38%|========            | 981/2553 [01:01&lt;01:37]        39%|========            | 997/2553 [01:02&lt;01:36]        40%|========            | 1013/2553 [01:03&lt;01:35]        40%|========            | 1029/2553 [01:04&lt;01:34]        41%|========            | 1046/2553 [01:05&lt;01:33]        42%|========            | 1060/2553 [01:06&lt;01:32]        42%|========            | 1077/2553 [01:07&lt;01:31]        43%|=========           | 1091/2553 [01:08&lt;01:31]        43%|=========           | 1106/2553 [01:09&lt;01:30]        44%|=========           | 1123/2553 [01:10&lt;01:29]        45%|=========           | 1138/2553 [01:11&lt;01:28]        45%|=========           | 1156/2553 [01:12&lt;01:27]        46%|=========           | 1172/2553 [01:13&lt;01:26]        47%|=========           | 1190/2553 [01:14&lt;01:24]        47%|=========           | 1208/2553 [01:15&lt;01:23]        48%|==========          | 1225/2553 [01:16&lt;01:22]        49%|==========          | 1240/2553 [01:17&lt;01:21]        49%|==========          | 1255/2553 [01:18&lt;01:20]        50%|==========          | 1272/2553 [01:19&lt;01:19]        50%|==========          | 1288/2553 [01:20&lt;01:18]        51%|==========          | 1306/2553 [01:21&lt;01:17]        52%|==========          | 1324/2553 [01:22&lt;01:16]        52%|==========          | 1338/2553 [01:23&lt;01:15]        53%|===========         | 1357/2553 [01:24&lt;01:14]        54%|===========         | 1373/2553 [01:25&lt;01:13]        54%|===========         | 1391/2553 [01:26&lt;01:11]        55%|===========         | 1408/2553 [01:27&lt;01:10]        56%|===========         | 1424/2553 [01:28&lt;01:09]        57%|===========         | 1444/2553 [01:29&lt;01:08]        57%|===========         | 1462/2553 [01:30&lt;01:07]        58%|============        | 1481/2553 [01:31&lt;01:05]        59%|============        | 1499/2553 [01:32&lt;01:04]        59%|============        | 1517/2553 [01:33&lt;01:03]        60%|============        | 1536/2553 [01:34&lt;01:02]        61%|============        | 1555/2553 [01:35&lt;01:00]        62%|============        | 1575/2553 [01:36&lt;00:59]        62%|============        | 1594/2553 [01:37&lt;00:58]        63%|=============       | 1611/2553 [01:38&lt;00:57]        64%|=============       | 1630/2553 [01:39&lt;00:56]        65%|=============       | 1648/2553 [01:40&lt;00:54]        65%|=============       | 1666/2553 [01:41&lt;00:53]        66%|=============       | 1685/2553 [01:42&lt;00:52]        67%|=============       | 1703/2553 [01:43&lt;00:51]        67%|=============       | 1722/2553 [01:44&lt;00:50]        68%|==============      | 1740/2553 [01:45&lt;00:49]        69%|==============      | 1759/2553 [01:46&lt;00:47]        70%|==============      | 1776/2553 [01:47&lt;00:46]        70%|==============      | 1794/2553 [01:48&lt;00:45]        71%|==============      | 1812/2553 [01:49&lt;00:44]        72%|==============      | 1831/2553 [01:50&lt;00:43]        72%|==============      | 1848/2553 [01:51&lt;00:42]        73%|===============     | 1866/2553 [01:52&lt;00:41]        74%|===============     | 1885/2553 [01:53&lt;00:40]        74%|===============     | 1900/2553 [01:54&lt;00:39]        75%|===============     | 1917/2553 [01:55&lt;00:38]        76%|===============     | 1934/2553 [01:56&lt;00:37]        76%|===============     | 1952/2553 [01:57&lt;00:36]        77%|===============     | 1969/2553 [01:58&lt;00:34]        78%|================    | 1987/2553 [01:59&lt;00:33]        79%|================    | 2005/2553 [02:00&lt;00:32]        79%|================    | 2021/2553 [02:01&lt;00:31]        80%|================    | 2038/2553 [02:02&lt;00:30]        81%|================    | 2058/2553 [02:03&lt;00:29]        81%|================    | 2079/2553 [02:04&lt;00:28]        82%|================    | 2098/2553 [02:05&lt;00:27]        83%|=================   | 2116/2553 [02:06&lt;00:26]        84%|=================   | 2132/2553 [02:07&lt;00:25]        84%|=================   | 2150/2553 [02:08&lt;00:23]        85%|=================   | 2169/2553 [02:09&lt;00:22]        86%|=================   | 2187/2553 [02:10&lt;00:21]        86%|=================   | 2208/2553 [02:11&lt;00:20]        87%|=================   | 2227/2553 [02:12&lt;00:19]        88%|==================  | 2243/2553 [02:13&lt;00:18]        89%|==================  | 2262/2553 [02:14&lt;00:17]        89%|==================  | 2281/2553 [02:15&lt;00:16]        90%|==================  | 2298/2553 [02:16&lt;00:15]        91%|==================  | 2319/2553 [02:17&lt;00:13]        92%|==================  | 2337/2553 [02:18&lt;00:12]        92%|==================  | 2353/2553 [02:19&lt;00:11]        93%|=================== | 2371/2553 [02:20&lt;00:10]        94%|=================== | 2389/2553 [02:21&lt;00:09]        94%|=================== | 2407/2553 [02:22&lt;00:08]        95%|=================== | 2427/2553 [02:23&lt;00:07]        96%|=================== | 2445/2553 [02:24&lt;00:06]        97%|=================== | 2464/2553 [02:25&lt;00:05]        97%|=================== | 2481/2553 [02:26&lt;00:04]        98%|===================| 2500/2553 [02:27&lt;00:03]        99%|===================| 2516/2553 [02:28&lt;00:02]        99%|===================| 2532/2553 [02:29&lt;00:01]       100%|===================| 2549/2553 [02:30&lt;00:00]       </code></pre>
 </div>
 </div>
 <p>The table below summarizes these results:</p>
-<div id="bc9370c4" class="cell" data-execution_count="12">
+<div id="081f73b4" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model_df <span class="op">=</span> pd.DataFrame({</span>
@@ -1052,7 +1052,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 <li><strong>Johnson’s relative weights</strong></li>
 </ul>
 <p>By viewing all metrics side-by-side, we can identify variables that consistently rank highly and those that are more model-sensitive.</p>
-<div id="1cf201a6" class="cell" data-execution_count="13">
+<div id="f8b69b04" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>full_df <span class="op">=</span> pd.concat([summary_df, model_df], axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">3</span>)</span>
@@ -1164,7 +1164,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 </div>
 </div>
 </div>
-<div id="ddbf3019" class="cell" data-execution_count="14">
+<div id="d4768d58" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>top_vars <span class="op">=</span> full_df.sort_values(<span class="st">"SHAP (mean abs)"</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">6</span>)</span>
@@ -1207,7 +1207,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 <li><strong>Multilayer Perceptron (MLP)</strong>: A fully connected neural network, for which we calculate permutation-based importance to assess how sensitive the model is to each input feature.</li>
 </ul>
 <p>These advanced models provide robustness checks and capture complex non-linear interactions that traditional methods may overlook.</p>
-<div id="098c0be6" class="cell" data-execution_count="15">
+<div id="e43958ee" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span>
@@ -1230,7 +1230,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 </details>
 </div>
 <p>The table below summarizes these results:</p>
-<div id="925adfe1" class="cell" data-execution_count="16">
+<div id="acfb8ce7" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>advanced_df <span class="op">=</span> pd.concat([xgb_importance_df, mlp_importance_df], axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">4</span>)</span>
@@ -1305,7 +1305,7 @@ Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
 </section>
 <section id="conclusion" class="level3">
 <h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
-<div id="e2d2b062" class="cell" data-execution_count="17">
+<div id="216b4508" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>

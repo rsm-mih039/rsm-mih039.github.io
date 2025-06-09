@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Miya Huang">
-<meta name="dcterms.date" content="2025-05-16">
+<meta name="dcterms.date" content="2025-06-09">
 
 <title>Multinomial Logit Model – Miya Huang</title>
 <style>
@@ -181,6 +181,10 @@ window.Quarto = {
     <a class="dropdown-item" href="../homework/hw3_questions.html">
  <span class="dropdown-text">HW3</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../homework/hw4_questions.html">
+ <span class="dropdown-text">HW4</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -242,7 +246,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 16, 2025</p>
+      <p class="date">June 9, 2025</p>
     </div>
   </div>
   
@@ -284,7 +288,7 @@ u_{ij} = (1 \times Netflix_j) + (0.5 \times Prime_j) + (-0.8*Ads_j) - 0.1\times 
 \]</span></p>
 <p>where the variables are binary indicators and <span class="math inline">\(\varepsilon\)</span> is Type 1 Extreme Value (ie, Gumble) distributed.</p>
 <p>The following code provides the simulation of the conjoint data.</p>
-<div id="0bf7db21" class="cell" data-execution_count="1">
+<div id="30251640" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -350,7 +354,7 @@ u_{ij} = (1 \times Netflix_j) + (0.5 \times Prime_j) + (-0.8*Ads_j) - 0.1\times 
 <h2 class="anchored" data-anchor-id="preparing-the-data-for-estimation">3. Preparing the Data for Estimation</h2>
 <p>The “hard part” of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer <span class="math inline">\(i\)</span>, covariate <span class="math inline">\(k\)</span>, and product <span class="math inline">\(j\)</span>) instead of the typical 2 dimensions for cross-sectional regression models (consumer <span class="math inline">\(i\)</span> and covariate <span class="math inline">\(k\)</span>). The fact that each task for each respondent has the same number of alternatives (3) helps. In addition, we need to convert the categorical variables for brand and ads into binary variables.</p>
 <p>To estimate the MNL likelihood, we must reshape the data to panel (long) format, and encode categorical variables (brand and ad exposure) into binary indicators. Each row represents one alternative within a choice task.</p>
-<div id="bdccb210" class="cell" data-execution_count="2">
+<div id="9340c283" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -452,7 +456,7 @@ u_{ij} = (1 \times Netflix_j) + (0.5 \times Prime_j) + (-0.8*Ads_j) - 0.1\times 
 - <span class="math inline">\(\beta_\text{prime}\)</span><br>
 - <span class="math inline">\(\beta_\text{ads}\)</span><br>
 - <span class="math inline">\(\beta_\text{price}\)</span></p>
-<div id="ea82dc5a" class="cell" data-execution_count="3">
+<div id="f821192f" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">"Netflix"</span>, <span class="st">"Prime"</span>, <span class="st">"Ads"</span>, <span class="st">"price"</span>]</span>
@@ -481,7 +485,7 @@ U_{ijt} = x_{ijt}^\top \beta + \varepsilon_{ijt}
 \ell(\beta) = \sum_{i} \sum_{t} \sum_{j \in \mathcal{J}_{it}} \delta_{ijt} \cdot \log \mathbb{P}_{ijt}
 \]</span></p>
 <p>This is the function we aim to maximize with respect to <span class="math inline">\(\beta\)</span> using numerical optimization.</p>
-<div id="3281b461" class="cell" data-execution_count="4">
+<div id="c6516643" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neg_log_likelihood(beta, X<span class="op">=</span>X_mat, y<span class="op">=</span>y, groups<span class="op">=</span>groups):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    utilities <span class="op">=</span> X <span class="op">@</span> beta</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    log_likelihood <span class="op">=</span> <span class="dv">0</span></span>
@@ -499,7 +503,7 @@ U_{ijt} = x_{ijt}^\top \beta + \varepsilon_{ijt}
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>log_likelihood</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The table below presents the MLEs for each parameter in the MNL model, along with standard errors and 95% confidence intervals. These values are estimated using <code>scipy.optimize.minimize()</code> with the BFGS method.</p>
-<div id="baf09acc" class="cell" data-execution_count="5">
+<div id="67b5d6b2" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial guess</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>init_beta <span class="op">=</span> np.zeros(n_params)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -592,7 +596,7 @@ U_{ijt} = x_{ijt}^\top \beta + \varepsilon_{ijt}
 - <span class="math inline">\(\beta_{\text{price}} \sim \mathcal{N}(0, 1^2)\)</span></p>
 <p>The proposal distribution is a multivariate normal with zero covariance, i.e., independent proposals: - First 3 dimensions: <span class="math inline">\(\mathcal{N}(0, 0.05)\)</span><br>
 - Last dimension (price): <span class="math inline">\(\mathcal{N}(0, 0.005)\)</span></p>
-<div id="95729e47" class="cell" data-execution_count="6">
+<div id="74ffcac1" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior log densities</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_prior(beta):</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    lp <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (beta[<span class="dv">0</span>:<span class="dv">3</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">25</span>).<span class="bu">sum</span>()</span>
@@ -603,7 +607,7 @@ U_{ijt} = x_{ijt}^\top \beta + \varepsilon_{ijt}
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_posterior(beta):</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>neg_log_likelihood(beta) <span class="op">+</span> log_prior(beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="1bcadfe0" class="cell" data-execution_count="7">
+<div id="bcd2aec3" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MH sampler</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metropolis_sampler(log_post_fn, start, steps<span class="op">=</span><span class="dv">11000</span>):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    draws <span class="op">=</span> np.zeros((steps, <span class="bu">len</span>(start)))</span>
@@ -631,7 +635,7 @@ U_{ijt} = x_{ijt}^\top \beta + \varepsilon_{ijt}
 <span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="356f0721" class="cell" data-execution_count="8">
+<div id="68f32854" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>start_beta <span class="op">=</span> np.zeros(<span class="dv">4</span>)</span>
@@ -647,7 +651,7 @@ U_{ijt} = x_{ijt}^\top \beta + \varepsilon_{ijt}
 <pre><code>Acceptance rate: 0.018</code></pre>
 </div>
 </div>
-<div id="0d174634" class="cell" data-execution_count="9">
+<div id="cb7a8935" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>param_names <span class="op">=</span> [<span class="st">"$</span><span class="ch">\\</span><span class="st">beta_</span><span class="sc">{netflix}</span><span class="st">$"</span>, <span class="st">"$</span><span class="ch">\\</span><span class="st">beta_</span><span class="sc">{prime}</span><span class="st">$"</span>, <span class="st">"$</span><span class="ch">\\</span><span class="st">beta_</span><span class="sc">{ads}</span><span class="st">$"</span>, <span class="st">"$</span><span class="ch">\\</span><span class="st">beta_</span><span class="sc">{price}</span><span class="st">$"</span>]</span>
@@ -691,7 +695,7 @@ U_{ijt} = x_{ijt}^\top \beta + \varepsilon_{ijt}
 <li><strong><span class="math inline">\(\beta_{price}\)</span></strong> is the most precise, with a narrow posterior centered around -0.099, confirming strong evidence for price sensitivity.</li>
 </ul>
 <p>These diagnostics suggest that the Metropolis-Hastings sampler successfully captured the posterior distributions for all parameters, with trace plots supporting convergence and histograms indicating stable inference. No signs of severe autocorrelation or non-convergence are evident.</p>
-<div id="fe005835" class="cell" data-execution_count="10">
+<div id="1d1cd460" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>posterior_summary <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"parameter"</span>: features,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mean"</span>: posterior.mean(axis<span class="op">=</span><span class="dv">0</span>),</span>

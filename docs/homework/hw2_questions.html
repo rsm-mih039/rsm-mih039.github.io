@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Miya Huang">
-<meta name="dcterms.date" content="2025-05-16">
+<meta name="dcterms.date" content="2025-06-09">
 
 <title>Poisson Regression Examples – Miya Huang</title>
 <style>
@@ -181,6 +181,10 @@ window.Quarto = {
     <a class="dropdown-item" href="../homework/hw3_questions.html">
  <span class="dropdown-text">HW3</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../homework/hw4_questions.html">
+ <span class="dropdown-text">HW4</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -235,7 +239,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 16, 2025</p>
+      <p class="date">June 9, 2025</p>
     </div>
   </div>
   
@@ -256,7 +260,7 @@ window.Quarto = {
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<div id="367fb1b2" class="cell" data-execution_count="1">
+<div id="bb118037" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -286,7 +290,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="d9e9a703" class="cell" data-execution_count="2">
+<div id="0de8c1e6" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'iscustomer'</span>)[<span class="st">'patents'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -300,7 +304,7 @@ Name: patents, dtype: float64</code></pre>
 </div>
 <p>Customers tend to have more patents on average (4.13 vs.&nbsp;3.47), and their distribution is more spread out, with more firms holding a higher number of patents. Non-customers are more concentrated at lower patent counts.</p>
 <p>Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.</p>
-<div id="77a23e66" class="cell" data-execution_count="3">
+<div id="5e97ecb9" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -328,7 +332,7 @@ Name: patents, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="250dc834" class="cell" data-execution_count="4">
+<div id="3a65c2ca" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'iscustomer'</span>)[<span class="st">'age'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -356,7 +360,7 @@ f(Y \mid \lambda) = \frac{e^{-\lambda} \lambda^Y}{Y!}
 \ell(\lambda) = \sum_{i=1}^n \left( -\lambda + Y_i \log \lambda - \log(Y_i!) \right)
 \]</span></p>
 <p>Log-Likelihood Function in Python</p>
-<div id="a9d1589a" class="cell" data-execution_count="5">
+<div id="f7c0868f" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -368,7 +372,7 @@ f(Y \mid \lambda) = \frac{e^{-\lambda} \lambda^Y}{Y!}
 </details>
 </div>
 <p>Plotting the Log-Likelihood Curve</p>
-<div id="a717999f" class="cell" data-execution_count="6">
+<div id="842c6a80" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -396,7 +400,7 @@ f(Y \mid \lambda) = \frac{e^{-\lambda} \lambda^Y}{Y!}
 <p><span class="math display">\[
 \hat{\lambda}_{\text{MLE}} = \bar{Y}
 \]</span> Sample Mean</p>
-<div id="3381ec11" class="cell" data-execution_count="7">
+<div id="13564298" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ybar <span class="op">=</span> np.mean(y)</span>
@@ -407,7 +411,7 @@ f(Y \mid \lambda) = \frac{e^{-\lambda} \lambda^Y}{Y!}
 </div>
 </div>
 <p>Numerical Maximization Using <code>scipy.optimize</code></p>
-<div id="3030ebe1" class="cell" data-execution_count="8">
+<div id="c3fbe7dd" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
@@ -436,7 +440,7 @@ Y_i \sim \text{Poisson}(\lambda_i), \quad \text{where } \lambda_i = \exp(X_i^\to
 <p>Covariates include: age, age squared, region (as dummies), and whether the firm is a Blueprinty customer.</p>
 <section id="define-model-matrix-and-response" class="level5">
 <h5 class="anchored" data-anchor-id="define-model-matrix-and-response">Define Model Matrix and Response</h5>
-<div id="99d638c7" class="cell" data-execution_count="9">
+<div id="905baffe" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -454,7 +458,7 @@ Y_i \sim \text{Poisson}(\lambda_i), \quad \text{where } \lambda_i = \exp(X_i^\to
 </section>
 <section id="estimate-poisson-regression-with-statsmodels" class="level5">
 <h5 class="anchored" data-anchor-id="estimate-poisson-regression-with-statsmodels">Estimate Poisson Regression with <code>statsmodels</code></h5>
-<div id="b0561166" class="cell" data-execution_count="10">
+<div id="b57d5ae6" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -500,13 +504,13 @@ Y_i \sim \text{Poisson}(\lambda_i), \quad \text{where } \lambda_i = \exp(X_i^\to
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Fri, 16 May 2025</td>
+<td>Mon, 09 Jun 2025</td>
 <td data-quarto-table-cell-role="th">Deviance:</td>
 <td>2143.3</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>16:51:38</td>
+<td>16:12:39</td>
 <td data-quarto-table-cell-role="th">Pearson chi2:</td>
 <td>2.07e+03</td>
 </tr>
@@ -616,7 +620,7 @@ Y_i \sim \text{Poisson}(\lambda_i), \quad \text{where } \lambda_i = \exp(X_i^\to
 </section>
 <section id="present-coefficients-and-standard-errors" class="level5">
 <h5 class="anchored" data-anchor-id="present-coefficients-and-standard-errors">Present Coefficients and Standard Errors</h5>
-<div id="e51c80d2" class="cell" data-execution_count="11">
+<div id="1d06b94d" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame({</span>
@@ -716,7 +720,7 @@ Y_i \sim \text{Poisson}(\lambda_i), \quad \text{where } \lambda_i = \exp(X_i^\to
 <h5 class="anchored" data-anchor-id="simulate-the-effect-of-blueprinty-software">Simulate the Effect of Blueprinty Software</h5>
 <p>We create two fake datasets: - <code>X_0</code> with <code>iscustomer = 0</code> for all firms (as if no firm were a customer) - <code>X_1</code> with <code>iscustomer = 1</code> for all firms (as if all firms were customers)</p>
 <p>We use the fitted model to compute predicted number of patents for each case, then take the difference.</p>
-<div id="81a7ed13" class="cell" data-execution_count="12">
+<div id="4004d86d" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>X_0 <span class="op">=</span> X.copy()</span>
@@ -780,7 +784,7 @@ Variable Definitions
 </div>
 <section id="load-and-clean-data" class="level4">
 <h4 class="anchored" data-anchor-id="load-and-clean-data">Load and Clean Data</h4>
-<div id="7ee56a9e" class="cell" data-execution_count="13">
+<div id="44fac37d" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -799,7 +803,7 @@ Variable Definitions
 </section>
 <section id="exploratory-data-analysis" class="level4">
 <h4 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h4>
-<div id="ab9cdb4f" class="cell" data-execution_count="14">
+<div id="fdd31b5f" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -868,7 +872,7 @@ Variable Definitions
 </section>
 <section id="fit-poisson-regression-model" class="level4">
 <h4 class="anchored" data-anchor-id="fit-poisson-regression-model">Fit Poisson Regression Model</h4>
-<div id="2ecb75e9" class="cell" data-execution_count="15">
+<div id="b54753cc" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -936,13 +940,13 @@ Variable Definitions
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Fri, 16 May 2025</td>
+<td>Mon, 09 Jun 2025</td>
 <td data-quarto-table-cell-role="th">Deviance:</td>
 <td>8.5782e+05</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>16:51:39</td>
+<td>16:12:40</td>
 <td data-quarto-table-cell-role="th">Pearson chi2:</td>
 <td>1.22e+06</td>
 </tr>
@@ -1079,7 +1083,7 @@ Variable Definitions
 </section>
 <section id="show-coefficients-and-exponentiated-effects" class="level4">
 <h4 class="anchored" data-anchor-id="show-coefficients-and-exponentiated-effects">Show Coefficients and Exponentiated Effects</h4>
-<div id="7692ce32" class="cell" data-execution_count="16">
+<div id="082b00aa" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>coef_df <span class="op">=</span> pd.DataFrame({</span>

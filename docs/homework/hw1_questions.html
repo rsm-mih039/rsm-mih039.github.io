@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Miya Huang">
-<meta name="dcterms.date" content="2025-05-16">
+<meta name="dcterms.date" content="2025-06-09">
 
 <title>A Replication of Karlan and List (2007) – Miya Huang</title>
 <style>
@@ -152,6 +152,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../homework/hw3_questions.html">
  <span class="dropdown-text">HW3</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../homework/hw4_questions.html">
+ <span class="dropdown-text">HW4</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -211,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 16, 2025</p>
+      <p class="date">June 9, 2025</p>
     </div>
   </div>
   
@@ -247,7 +251,7 @@ Each letter included a reply card with three suggested gift levels based on the 
 <p>The dataset consists of <strong>50,083 observations</strong> and <strong>51 variables</strong>, representing prior donors who were part of a large-scale direct mail fundraising experiment. Each row corresponds to an individual who received a solicitation letter, and the variables capture both treatment assignments and individual characteristics.</p>
 <p>The bar plots show the distribution of key categorical variables in the dataset. The sample is unbalanced across treatment groups by design, with approximately <strong>two-thirds assigned to treatment</strong>. Only <strong>2.1%</strong> of individuals donated, indicating a low response rate. Most of the sample resides in <strong>blue states (59.5%)</strong>, and the majority of donors are <strong>male (70.6%)</strong> and <strong>not donating as a couple (88.7%)</strong>.</p>
 <p>The histograms of numeric variables show that both donation-related and historical giving behaviors are <strong>highly skewed to the right</strong>. Most donation amounts are under $100, and both <strong>highest past donation</strong> and <strong>frequency of past donations</strong> exhibit long right tails, suggesting that a small subset of donors account for a disproportionately large share of past giving. The <strong>recency variable (<code>mrm2</code>)</strong> also shows many donors who haven’t contributed recently, with the most frequent values clustered between 0 and 12 months.</p>
-<div id="ace09dac" class="cell" data-execution_count="1">
+<div id="fb360377" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -572,7 +576,7 @@ Variable Definitions
 <section id="balance-test" class="level4">
 <h4 class="anchored" data-anchor-id="balance-test">Balance Test</h4>
 <p>As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.</p>
-<div id="4d5d8d2a" class="cell" data-execution_count="2">
+<div id="53e3720a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -730,7 +734,7 @@ Variable Definitions
 <section id="charitable-contribution-made" class="level3">
 <h3 class="anchored" data-anchor-id="charitable-contribution-made">Charitable Contribution Made</h3>
 <p>First, I analyze whether matched donations lead to an increased response rate of making a donation.</p>
-<div id="5b1f4ebd" class="cell" data-execution_count="3">
+<div id="3fa2268b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -766,7 +770,7 @@ Variable Definitions
 </div>
 </div>
 <p>The treatment group has a higher donation rate (2.20%) than the control group (1.79%), suggesting a positive effect of the matching offer on donor response.</p>
-<div id="043e6d9d" class="cell" data-execution_count="4">
+<div id="fb0af9ef" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -825,7 +829,7 @@ Linear regression result:
 <p>Both the t-test and the linear regression show that the treatment group had a higher donation rate than the control group, and this difference is statistically significant at the 1% level. Specifically, receiving a matching grant offer increases the probability of donating by about 0.42 percentage points—rising from roughly 1.79% in the control group to 2.21% in the treatment group. While this absolute change may appear small, it represents a <strong>relative increase of over 20%</strong>, which is substantial given the typically low baseline response rate in charitable giving.</p>
 <p>To further support this finding, I estimate a probit model where the outcome is whether a donation was made and the explanatory variable is treatment assignment. The coefficient on <code>treatment</code> is <strong>0.087</strong>, which is also statistically significant at the 1% level. Although the coefficient cannot be interpreted directly as a probability, it indicates an increase in the latent propensity to donate among individuals who received the matching message.</p>
 <p>Taken together, the results provide consistent evidence that even modest psychological framing—such as mentioning that a donation will be matched—can meaningfully increase donor response.</p>
-<div id="59932d17" class="cell" data-execution_count="5">
+<div id="cc71a360" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -848,8 +852,8 @@ Linear regression result:
 Dep. Variable:                   gave   No. Observations:                50083
 Model:                         Probit   Df Residuals:                    50081
 Method:                           MLE   Df Model:                            1
-Date:                Fri, 16 May 2025   Pseudo R-squ.:               0.0009783
-Time:                        16:51:44   Log-Likelihood:                -5030.5
+Date:                Mon, 09 Jun 2025   Pseudo R-squ.:               0.0009783
+Time:                        16:12:45   Log-Likelihood:                -5030.5
 converged:                       True   LL-Null:                       -5035.4
 Covariance Type:            nonrobust   LLR p-value:                  0.001696
 ==============================================================================
@@ -865,7 +869,7 @@ treatment      0.0868      0.028      3.113      0.002       0.032       0.141
 <h3 class="anchored" data-anchor-id="differences-between-match-rates">Differences between Match Rates</h3>
 <p>Next, I assess the effectiveness of different sizes of matched donations on the response rate.</p>
 <p>I conduct three pairwise t-tests comparing donation rates between match ratios (2:1 vs.&nbsp;1:1, 3:1 vs.&nbsp;1:1, and 3:1 vs.&nbsp;2:1). The differences in mean donation rates across these groups are all very small and none are statistically significant at the 5% level. All p-values are well above 0.30. This suggests that the presence of a match itself may be sufficient to motivate behavior, while increasing the match ratio beyond 1:1 offers little incremental benefit.</p>
-<div id="b3ac12d4" class="cell" data-execution_count="6">
+<div id="a22fd1df" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -950,7 +954,7 @@ treatment      0.0868      0.028      3.113      0.002       0.032       0.141
 </div>
 </div>
 <p>To determine whether higher match ratios influence the likelihood of donating, I regress the binary outcome <code>gave</code> on the categorical variable <code>ratio</code>, using only the treatment group. The 1:1 match ratio serves as the reference category, and the model estimates how donation rates differ under 2:1 and 3:1 matching offers.</p>
-<div id="5be57d7d" class="cell" data-execution_count="7">
+<div id="5cd89f85" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -980,7 +984,7 @@ treatment      0.0868      0.028      3.113      0.002       0.032       0.141
 </div>
 <p>The estimated coefficients for <code>ratio2</code> and <code>ratio3</code> are positive, suggesting slightly higher donation rates compared to the 1:1 baseline. However, both coefficients are <strong>not statistically significant</strong> (p-values &gt; 0.3), indicating that the observed differences could be due to random variation rather than a true treatment effect.</p>
 <p>To assess whether increasing the match ratio leads to higher response, I compared donation rates directly from the data and from the regression coefficients.</p>
-<div id="7918244d" class="cell" data-execution_count="8">
+<div id="644ed2c3" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1027,7 +1031,7 @@ Estimated difference from regression coefficients:
 <li>The 3:1 group gives almost the same (p = 0.99)</li>
 </ul>
 <p>This suggests that higher match ratios do not meaningfully affect how much people donate, even if they influence whether they donate at all.</p>
-<div id="17df7503" class="cell" data-execution_count="9">
+<div id="e4bcbc6d" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1069,13 +1073,13 @@ Estimated difference from regression coefficients:
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Fri, 16 May 2025</td>
+<td>Mon, 09 Jun 2025</td>
 <td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
 <td>0.694</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>16:51:44</td>
+<td>16:12:45</td>
 <td data-quarto-table-cell-role="th">Log-Likelihood:</td>
 <td>-1.2063e+05</td>
 </tr>
@@ -1186,7 +1190,7 @@ Estimated difference from regression coefficients:
 <li>The 3:1 group gives $3.89 less (p = 0.31)</li>
 </ul>
 <p>These differences are small and statistically insignificant. This suggests that once someone decides to donate, the size of the match does not influence how much they give.</p>
-<div id="dce84437" class="cell" data-execution_count="10">
+<div id="50154b38" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1227,13 +1231,13 @@ Estimated difference from regression coefficients:
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Fri, 16 May 2025</td>
+<td>Mon, 09 Jun 2025</td>
 <td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
 <td>0.473</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>16:51:44</td>
+<td>16:12:45</td>
 <td data-quarto-table-cell-role="th">Log-Likelihood:</td>
 <td>-3794.3</td>
 </tr>
@@ -1340,7 +1344,7 @@ Estimated difference from regression coefficients:
 </div>
 <p><br> The histograms display the distribution of donation amounts among individuals who donated, separated by treatment and control groups. Both distributions are heavily right-skewed, with most donations concentrated under $100.</p>
 <p>The treatment group’s average donation is <strong>$43.87</strong>, while the control group’s average is slightly higher at <strong>$45.54</strong>. Despite the visual and numerical difference, the gap is small and not statistically significant, reinforcing earlier regression results that <strong>match offers influence whether people give, but not how much they give</strong> once they’ve decided to donate.</p>
-<div id="8ab2c150" class="cell" data-execution_count="11">
+<div id="ef484f9f" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1396,7 +1400,7 @@ Estimated difference from regression coefficients:
 <h3 class="anchored" data-anchor-id="law-of-large-numbers">Law of Large Numbers</h3>
 <p>The plot shows the cumulative average difference in donation amounts between the treatment and control groups, based on 10,000 simulated donor pairs. Initially, the cumulative average fluctuates substantially, reflecting noise in small samples. As the number of simulated pairs increases, the cumulative average steadily converges toward the true mean difference (indicated by the red dashed line).</p>
 <p>This pattern illustrates the Law of Large Numbers: with enough data, the average of simulated differences approximates the population-level treatment effect. In this case, the cumulative average stabilizes around the true mean difference, providing visual confirmation that our estimate becomes more reliable as sample size increases.</p>
-<div id="d8e9f8d7" class="cell" data-execution_count="12">
+<div id="03ae54da" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1446,7 +1450,7 @@ Estimated difference from regression coefficients:
 <p>These histograms show the distribution of simulated mean donation differences (treatment minus control) across 1000 replications, at four different sample sizes.</p>
 <p>As the sample size increases, the distributions become narrower and more centered. This reflects a reduction in <strong>uncertainty</strong>—with small samples, estimates of the mean difference vary widely due to random noise. As the number of observations grows, the law of large numbers ensures that sample estimates converge toward the true underlying difference, and the variability across simulations shrinks.</p>
 <p>At all sample sizes, the distributions tend to center slightly below zero, which is consistent with the observed data where treatment donors gave slightly less than control donors, on average. While the difference is small and not statistically significant, the simulation reinforces that <strong>larger sample sizes produce more stable and precise estimates</strong>, even when the underlying effect is near zero.</p>
-<div id="c9ad1dc3" class="cell" data-execution_count="13">
+<div id="79b2c1bb" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
