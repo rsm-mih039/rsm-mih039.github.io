@@ -18,6 +18,8 @@ website:
             text: HW2
           - href: homework/hw3_questions.qmd
             text: HW3
+          - href: homework/hw4_questions.qmd
+            text: HW4
 
 format:
   html:

@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Miya Huang">
+<meta name="dcterms.date" content="2025-06-09">
+
+<title>Unsupervised and Supervised Machine Learning: From K-Means to Key Drivers – Miya Huang</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-d4d76bf8491c20bad77d141916dc28e1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Miya Huang</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../resume.html"> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-homework" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Homework</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-homework">    
+        <li>
+    <a class="dropdown-item" href="../homework/hw1_questions.html">
+ <span class="dropdown-text">HW1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../homework/hw2_questions.html">
+ <span class="dropdown-text">HW2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../homework/hw3_questions.html">
+ <span class="dropdown-text">HW3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../homework/hw4_questions.html">
+ <span class="dropdown-text">HW4</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#visualizing-k-means-clustering-penguins-from-scratch" id="toc-visualizing-k-means-clustering-penguins-from-scratch" class="nav-link active" data-scroll-target="#visualizing-k-means-clustering-penguins-from-scratch">Visualizing K-Means: Clustering Penguins from Scratch</a>
+  <ul class="collapse">
+  <li><a href="#what-is-k-means" id="toc-what-is-k-means" class="nav-link" data-scroll-target="#what-is-k-means">What is K-Means?</a></li>
+  <li><a href="#mathematical-logic" id="toc-mathematical-logic" class="nav-link" data-scroll-target="#mathematical-logic">Mathematical Logic</a></li>
+  <li><a href="#visualizing-the-k-means-algorithm-step-by-step" id="toc-visualizing-the-k-means-algorithm-step-by-step" class="nav-link" data-scroll-target="#visualizing-the-k-means-algorithm-step-by-step">Visualizing the K-Means Algorithm Step-by-Step</a></li>
+  <li><a href="#custom-vs.-built-in-k-means-a-side-by-side-comparison" id="toc-custom-vs.-built-in-k-means-a-side-by-side-comparison" class="nav-link" data-scroll-target="#custom-vs.-built-in-k-means-a-side-by-side-comparison">Custom vs.&nbsp;Built-in K-Means: A Side-by-Side Comparison</a></li>
+  <li><a href="#determining-the-optimal-number-of-clusters-k" id="toc-determining-the-optimal-number-of-clusters-k" class="nav-link" data-scroll-target="#determining-the-optimal-number-of-clusters-k">Determining the Optimal Number of Clusters (K)</a></li>
+  </ul></li>
+  <li><a href="#uncovering-what-drives-outcomes-a-multimethod-feature-importance-analysis" id="toc-uncovering-what-drives-outcomes-a-multimethod-feature-importance-analysis" class="nav-link" data-scroll-target="#uncovering-what-drives-outcomes-a-multimethod-feature-importance-analysis">Uncovering What Drives Outcomes: A Multimethod Feature Importance Analysis</a>
+  <ul class="collapse">
+  <li><a href="#introduction-and-dataset-overview" id="toc-introduction-and-dataset-overview" class="nav-link" data-scroll-target="#introduction-and-dataset-overview">Introduction and Dataset Overview</a></li>
+  <li><a href="#statistical-feature-importance-methods" id="toc-statistical-feature-importance-methods" class="nav-link" data-scroll-target="#statistical-feature-importance-methods">Statistical Feature Importance Methods</a></li>
+  <li><a href="#model-based-variable-importance" id="toc-model-based-variable-importance" class="nav-link" data-scroll-target="#model-based-variable-importance">Model-Based Variable Importance</a></li>
+  <li><a href="#summary-table-of-results" id="toc-summary-table-of-results" class="nav-link" data-scroll-target="#summary-table-of-results">Summary Table of Results</a></li>
+  <li><a href="#extended-comparison-with-advanced-models" id="toc-extended-comparison-with-advanced-models" class="nav-link" data-scroll-target="#extended-comparison-with-advanced-models">Extended Comparison with Advanced Models</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Unsupervised and Supervised Machine Learning: From K-Means to Key Drivers</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Miya Huang </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 9, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In this blog post, I explore two fundamental tasks in machine learning—<strong>unsupervised clustering</strong> and <strong>supervised driver analysis</strong>—using Python and real-world marketing datasets.</p>
+<p>The first part focuses on implementing the K-Means algorithm from scratch, applying it to the well-known Palmer Penguins dataset. Through step-by-step visualizations, I illustrate how the algorithm identifies natural groupings based on body measurements, and evaluate the clustering quality using WCSS and silhouette scores.</p>
+<p>In the second part, I turn to key driver analysis using a synthetic customer satisfaction dataset. I replicate and expand a benchmark comparison from class that evaluates variable importance using six distinct methods: Pearson correlation, standardized regression coefficients, “usefulness” (change in R²), Shapley values (LMG), Johnson’s relative weights, and Mean Decrease in Gini from a random forest model.</p>
+<p>Together, these two analyses reflect both the structure-finding and insight-generating power of machine learning in marketing analytics.</p>
+<section id="visualizing-k-means-clustering-penguins-from-scratch" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-k-means-clustering-penguins-from-scratch">Visualizing K-Means: Clustering Penguins from Scratch</h2>
+<section id="what-is-k-means" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-k-means">What is K-Means?</h3>
+<p>K-Means is an unsupervised machine learning algorithm used for discovering clusters in data based on similarity (typically using Euclidean distance). It is widely used in marketing segmentation, image compression, and pattern recognition.</p>
+<p>The goal is to partition data into K groups such that data points within each cluster are as close as possible to each other, and as far as possible from points in other clusters.</p>
+</section>
+<section id="mathematical-logic" class="level3">
+<h3 class="anchored" data-anchor-id="mathematical-logic">Mathematical Logic</h3>
+<p>This section introduces the mathematical foundation of the K-Means clustering algorithm, which is one of the most popular unsupervised learning methods for grouping similar observations. The goal of K-Means is to assign <span class="math inline">\(n\)</span> observations into <span class="math inline">\(K\)</span> distinct, non-overlapping clusters based on feature similarity, in such a way that the within-cluster variation is minimized.</p>
+<p>Suppose we have <span class="math inline">\(n\)</span> observations, each represented by a <span class="math inline">\(p\)</span>-dimensional feature vector <span class="math inline">\(\mathbf{x}_i \in \mathbb{R}^p\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>. We want to partition the observations into <span class="math inline">\(K\)</span> clusters, denoted as <span class="math inline">\(C_1, \ldots, C_K\)</span>, such that:</p>
+<ul>
+<li>Every observation belongs to exactly one cluster: <span class="math inline">\(\bigcup_{k=1}^K C_k = \{1, \ldots, n\}\)</span></li>
+<li>No overlap between clusters: <span class="math inline">\(C_k \cap C_{k'} = \emptyset\)</span> for all <span class="math inline">\(k \ne k'\)</span></li>
+</ul>
+<p>The objective of K-Means is to minimize the total within-cluster sum of squared Euclidean distances, defined as:</p>
+<p><span class="math display">\[
+\text{WCSS} = \sum_{k=1}^K \sum_{i \in C_k} \| \mathbf{x}_i - \boldsymbol{\mu}_k \|^2
+\]</span></p>
+<p>where: - <span class="math inline">\(C_k\)</span> is the set of indices for points assigned to cluster <span class="math inline">\(k\)</span> - <span class="math inline">\(\boldsymbol{\mu}_k\)</span> is the centroid (mean vector) of cluster <span class="math inline">\(k\)</span>, computed as:</p>
+<p><span class="math display">\[
+\boldsymbol{\mu}_k = \frac{1}{|C_k|} \sum_{i \in C_k} \mathbf{x}_i
+\]</span></p>
+<p>In words, the WCSS measures how tightly grouped the points in each cluster are around their respective cluster centers.</p>
+<section id="k-means-algorithm-iterative-optimization" class="level4">
+<h4 class="anchored" data-anchor-id="k-means-algorithm-iterative-optimization">K-Means Algorithm (Iterative Optimization)</h4>
+<p>K-Means uses a simple iterative algorithm to find a local minimum of the WCSS objective:</p>
+<ol type="1">
+<li><strong>Initialize</strong>: Randomly select <span class="math inline">\(K\)</span> observations as initial cluster centroids <span class="math inline">\(\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K\)</span>.</li>
+<li><strong>Assign Step</strong>: For each observation <span class="math inline">\(\mathbf{x}_i\)</span>, assign it to the nearest cluster centroid using Euclidean distance:</li>
+</ol>
+<p><span class="math display">\[
+\text{Cluster}(\mathbf{x}_i) = \arg\min_{k \in \{1, \ldots, K\}} \| \mathbf{x}_i - \boldsymbol{\mu}_k \|^2
+\]</span></p>
+<ol start="3" type="1">
+<li><strong>Update Step</strong>: For each cluster <span class="math inline">\(k\)</span>, recompute its centroid as the mean of all points currently assigned to it:</li>
+</ol>
+<p><span class="math display">\[
+\boldsymbol{\mu}_k^{\text{new}} = \frac{1}{|C_k|} \sum_{\mathbf{x}_i \in C_k} \mathbf{x}_i
+\]</span></p>
+<ol start="4" type="1">
+<li><strong>Repeat</strong> Steps 2–3 until cluster assignments no longer change (convergence).</li>
+</ol>
+</section>
+<section id="notes-on-optimization" class="level4">
+<h4 class="anchored" data-anchor-id="notes-on-optimization">Notes on Optimization</h4>
+<ul>
+<li>The K-Means algorithm is not guaranteed to find the global minimum of the WCSS, because the optimization is non-convex and depends on initialization.</li>
+<li>A common practical strategy is to run the algorithm multiple times with different initializations and choose the best solution (lowest WCSS).</li>
+<li>Cluster labels are arbitrary: permuting the label numbers does not change the structure.</li>
+</ul>
+</section>
+<section id="why-use-euclidean-distance" class="level4">
+<h4 class="anchored" data-anchor-id="why-use-euclidean-distance">Why Use Euclidean Distance?</h4>
+<p>In standard K-Means, the measure of similarity is Euclidean distance. That’s why it’s important to standardize the features before clustering (especially when variables are on different scales), so that no single variable dominates the distance metric.</p>
+</section>
+</section>
+<section id="visualizing-the-k-means-algorithm-step-by-step" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-the-k-means-algorithm-step-by-step">Visualizing the K-Means Algorithm Step-by-Step</h3>
+<p>To better understand how the K-Means algorithm learns and adjusts cluster boundaries, I created an animation that visualizes each iteration of the algorithm applied to the penguins dataset.</p>
+<p>The algorithm works by repeating two simple steps:</p>
+<ol type="1">
+<li><strong>Assignment</strong>: Each point is assigned to the nearest centroid.</li>
+<li><strong>Update</strong>: Each centroid is recalculated as the mean of the points assigned to it.</li>
+</ol>
+<p>This process continues until the centroids stop moving significantly—i.e., the algorithm converges.</p>
+<p>The animation below illustrates this iterative process using <code>bill_length_mm</code> and <code>flipper_length_mm</code> as features, with <span class="math inline">\(K = 3\)</span> clusters. Each frame represents one iteration. Data points are colored by cluster assignment, and the black “×” marks indicate the current centroid positions.</p>
+<p><img src="../images/kmeans_steps.gif" class="img-fluid"></p>
+</section>
+<section id="custom-vs.-built-in-k-means-a-side-by-side-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="custom-vs.-built-in-k-means-a-side-by-side-comparison">Custom vs.&nbsp;Built-in K-Means: A Side-by-Side Comparison</h3>
+<p>To evaluate the correctness and effectiveness of the custom K-Means algorithm I implemented, I compare its performance against the built-in <code>KMeans</code> implementation from the <code>scikit-learn</code> library. Specifically, I use <span class="math inline">\(K = 3\)</span> clusters and assess the clustering results using two metrics: <strong>Within-Cluster Sum of Squares (WCSS)</strong> and <strong>Silhouette Score</strong>.</p>
+<div id="50ab3b2d" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pd.read_csv(<span class="st">"../data/palmer_penguins.csv"</span>).dropna()</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>penguins.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">species</th>
+<th data-quarto-table-cell-role="th">island</th>
+<th data-quarto-table-cell-role="th">bill_length_mm</th>
+<th data-quarto-table-cell-role="th">bill_depth_mm</th>
+<th data-quarto-table-cell-role="th">flipper_length_mm</th>
+<th data-quarto-table-cell-role="th">body_mass_g</th>
+<th data-quarto-table-cell-role="th">sex</th>
+<th data-quarto-table-cell-role="th">year</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Adelie</td>
+<td>Torgersen</td>
+<td>39.1</td>
+<td>18.7</td>
+<td>181</td>
+<td>3750</td>
+<td>male</td>
+<td>2007</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Adelie</td>
+<td>Torgersen</td>
+<td>39.5</td>
+<td>17.4</td>
+<td>186</td>
+<td>3800</td>
+<td>female</td>
+<td>2007</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Adelie</td>
+<td>Torgersen</td>
+<td>40.3</td>
+<td>18.0</td>
+<td>195</td>
+<td>3250</td>
+<td>female</td>
+<td>2007</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Adelie</td>
+<td>Torgersen</td>
+<td>36.7</td>
+<td>19.3</td>
+<td>193</td>
+<td>3450</td>
+<td>female</td>
+<td>2007</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Adelie</td>
+<td>Torgersen</td>
+<td>39.3</td>
+<td>20.6</td>
+<td>190</td>
+<td>3650</td>
+<td>male</td>
+<td>2007</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="3d2517a1" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> penguins[[<span class="st">"bill_length_mm"</span>, <span class="st">"flipper_length_mm"</span>]].values</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here is the self-written function for K-Means, which initializes centroids randomly and iteratively updates them until convergence. The logic matches the standard K-Means algorithm discussed above.</p>
+<div id="a025a7e7" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kmeans_custom(X, k, max_iter<span class="op">=</span><span class="dv">100</span>):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    n_samples, n_features <span class="op">=</span> X.shape</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    centroids <span class="op">=</span> X[np.random.choice(n_samples, k, replace<span class="op">=</span><span class="va">False</span>)]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(max_iter):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        distances <span class="op">=</span> np.linalg.norm(X[:, np.newaxis] <span class="op">-</span> centroids, axis<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        labels <span class="op">=</span> np.argmin(distances, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        new_centroids <span class="op">=</span> np.array([X[labels <span class="op">==</span> i].mean(axis<span class="op">=</span><span class="dv">0</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(k)])</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.allclose(centroids, new_centroids):</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        centroids <span class="op">=</span> new_centroids</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> labels, centroids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We now apply both the custom implementation and the built-in <code>KMeans</code> from scikit-learn to the same standardized dataset, using 3 clusters.</p>
+<div id="41f3015d" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>kmeans_sklearn <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">3</span>, n_init<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>labels_builtin <span class="op">=</span> kmeans_sklearn.fit_predict(X_scaled)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>centroids_builtin <span class="op">=</span> kmeans_sklearn.cluster_centers_</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>labels_custom, centroids_custom <span class="op">=</span> kmeans_custom(X_scaled, k<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To visually compare the clustering results, the plots below show the cluster assignments produced by the custom K-Means implementation (left) and the built-in <code>scikit-learn</code> implementation (right). In both cases:</p>
+<ul>
+<li>Points are colored by their assigned cluster.</li>
+<li>Centroids are marked with black diamonds (custom) and red diamonds (built-in).</li>
+</ul>
+<p>The plots confirm that both methods yield identical clustering structures, with near-perfect agreement in cluster boundaries and centroid positions.</p>
+<div id="e5164180" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>), sharex<span class="op">=</span><span class="va">True</span>, sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(X_scaled[:, <span class="dv">0</span>], X_scaled[:, <span class="dv">1</span>], c<span class="op">=</span>labels_custom, cmap<span class="op">=</span><span class="st">'Accent'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(<span class="op">*</span>centroids_custom.T, color<span class="op">=</span><span class="st">'black'</span>, marker<span class="op">=</span><span class="st">'D'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Centroid'</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Custom K-Means Clustering"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].scatter(X_scaled[:, <span class="dv">0</span>], X_scaled[:, <span class="dv">1</span>], c<span class="op">=</span>labels_builtin, cmap<span class="op">=</span><span class="st">'Accent'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].scatter(<span class="op">*</span>centroids_builtin.T, color<span class="op">=</span><span class="st">'red'</span>, marker<span class="op">=</span><span class="st">'D'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Centroid'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"scikit-learn KMeans Clustering"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].legend()</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes:</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Scaled Bill Length"</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Scaled Flipper Length"</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_questions_files/figure-html/cell-6-output-1.png" width="1142" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We use two metrics to compare the quality of clustering:</p>
+<ul>
+<li><strong>WCSS</strong>: Measures how compact the clusters are.</li>
+<li><strong>Silhouette Score</strong>: Combines cohesion and separation; higher is better.</li>
+</ul>
+<div id="78d654a9" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_wcss(X, labels):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(np.linalg.norm(X[labels <span class="op">==</span> i] <span class="op">-</span> X[labels <span class="op">==</span> i].mean(axis<span class="op">=</span><span class="dv">0</span>))<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> i <span class="kw">in</span> np.unique(labels))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>wcss_custom <span class="op">=</span> compute_wcss(X_scaled, labels_custom)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>sil_custom <span class="op">=</span> silhouette_score(X_scaled, labels_custom)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>wcss_builtin <span class="op">=</span> kmeans_sklearn.inertia_</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>sil_builtin <span class="op">=</span> silhouette_score(X_scaled, labels_builtin)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Comparison of Custom vs. Built-in KMeans (K=3)"</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Custom KMeans     → WCSS: </span><span class="sc">{</span>wcss_custom<span class="sc">:.2f}</span><span class="ss">, Silhouette: </span><span class="sc">{</span>sil_custom<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Built-in KMeans   → WCSS: </span><span class="sc">{</span>wcss_builtin<span class="sc">:.2f}</span><span class="ss">, Silhouette: </span><span class="sc">{</span>sil_builtin<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Comparison of Custom vs. Built-in KMeans (K=3)
+Custom KMeans     → WCSS: 154.85, Silhouette: 0.5189
+Built-in KMeans   → WCSS: 154.85, Silhouette: 0.5189</code></pre>
+</div>
+</div>
+<p>The comparison shows that the custom implementation of the K-Means algorithm produces results that are nearly identical to those of the built-in <code>KMeans</code> from <code>scikit-learn</code>.</p>
+<ul>
+<li>The <strong>WCSS</strong> values match exactly, indicating that the overall compactness of the clusters is the same.</li>
+<li>The <strong>Silhouette Scores</strong> are also identical, suggesting both methods achieve the same balance of intra-cluster cohesion and inter-cluster separation.</li>
+</ul>
+<p>This confirms that the logic in the custom implementation is consistent with the standard approach, validating both the clustering assignments and the centroid updates.</p>
+</section>
+<section id="determining-the-optimal-number-of-clusters-k" class="level3">
+<h3 class="anchored" data-anchor-id="determining-the-optimal-number-of-clusters-k">Determining the Optimal Number of Clusters (K)</h3>
+<p>Choosing the right number of clusters is a key decision in K-Means clustering. To determine the optimal <span class="math inline">\(K\)</span>, we evaluate clustering performance across different values of <span class="math inline">\(K\)</span> using:</p>
+<ul>
+<li><strong>WCSS</strong>: A lower WCSS indicates more compact clusters, but it always decreases with higher <span class="math inline">\(K\)</span>.</li>
+<li><strong>Silhouette Score</strong>: Balances cohesion and separation, with values closer to 1 indicating better-defined clusters.</li>
+</ul>
+<p>We test <span class="math inline">\(K = 2\)</span> to <span class="math inline">\(K = 7\)</span> and plot both metrics to look for the “elbow” in the WCSS curve and the peak in the silhouette scores.</p>
+<div id="e0ff3310" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>k_values <span class="op">=</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">8</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>wcss_list <span class="op">=</span> []</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>silhouette_list <span class="op">=</span> []</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> k_values:</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    labels_k, _ <span class="op">=</span> kmeans_custom(X_scaled, k)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    wcss <span class="op">=</span> compute_wcss(X_scaled, labels_k)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    sil <span class="op">=</span> silhouette_score(X_scaled, labels_k)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    wcss_list.append(wcss)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    silhouette_list.append(sil)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>best_k_sil <span class="op">=</span> k_values[np.argmax(silhouette_list)]</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># WCSS</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>plt.plot(k_values, wcss_list, marker<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Elbow (K=3)'</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"WCSS by Number of Clusters"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Clusters (K)"</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"WCSS"</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Silhouette</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>plt.plot(k_values, silhouette_list, marker<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span>best_k_sil, color<span class="op">=</span><span class="st">'green'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="ss">f'Peak (K=</span><span class="sc">{</span>best_k_sil<span class="sc">}</span><span class="ss">)'</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Silhouette Score by Number of Clusters"</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Clusters (K)"</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Silhouette Score"</span>)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_questions_files/figure-html/cell-8-output-1.png" width="1142" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the silhouette plot, we mark the true peak at <span class="math inline">\(K=2\)</span>, where the score is highest. While this suggests that the data naturally splits into two well-separated clusters, the WCSS plot shows an elbow at <span class="math inline">\(K=3\)</span>, which offers a better balance between complexity and explanatory power.</p>
+<p>Both metrics are helpful, but may suggest different optimal values depending on what aspect of clustering is prioritized.</p>
+</section>
+</section>
+<section id="uncovering-what-drives-outcomes-a-multimethod-feature-importance-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="uncovering-what-drives-outcomes-a-multimethod-feature-importance-analysis">Uncovering What Drives Outcomes: A Multimethod Feature Importance Analysis</h2>
+<p>In this section, I use supervised machine learning methods to identify which variables are most important in explaining a target outcome.</p>
+<p>Following the framework introduced in Session 5, I compare six different variable importance measures: Pearson correlation, standardized regression coefficients, usefulness (<span class="math inline">\(\Delta R^2\)</span>), Shapley values, Johnson’s relative weights, and mean decrease in Gini from a random forest model.</p>
+<p>This analysis helps uncover which features consistently drive the outcome across different model perspectives.</p>
+<section id="introduction-and-dataset-overview" class="level3">
+<h3 class="anchored" data-anchor-id="introduction-and-dataset-overview">Introduction and Dataset Overview</h3>
+<p>We begin by loading the dataset and inspecting its structure. Our goal is to identify the response variable and the candidate predictors to be used in the driver analysis.</p>
+<div id="da5f8f9c" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"../data/data_for_drivers_analysis.csv"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">brand</th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">satisfaction</th>
+<th data-quarto-table-cell-role="th">trust</th>
+<th data-quarto-table-cell-role="th">build</th>
+<th data-quarto-table-cell-role="th">differs</th>
+<th data-quarto-table-cell-role="th">easy</th>
+<th data-quarto-table-cell-role="th">appealing</th>
+<th data-quarto-table-cell-role="th">rewarding</th>
+<th data-quarto-table-cell-role="th">popular</th>
+<th data-quarto-table-cell-role="th">service</th>
+<th data-quarto-table-cell-role="th">impact</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">count</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+<td>2553.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">mean</td>
+<td>4.857423</td>
+<td>8931.480611</td>
+<td>3.386604</td>
+<td>0.549550</td>
+<td>0.461810</td>
+<td>0.334508</td>
+<td>0.536232</td>
+<td>0.451234</td>
+<td>0.451234</td>
+<td>0.536232</td>
+<td>0.467293</td>
+<td>0.330983</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">std</td>
+<td>2.830096</td>
+<td>5114.287849</td>
+<td>1.172006</td>
+<td>0.497636</td>
+<td>0.498637</td>
+<td>0.471911</td>
+<td>0.498783</td>
+<td>0.497714</td>
+<td>0.497714</td>
+<td>0.498783</td>
+<td>0.499027</td>
+<td>0.470659</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">min</td>
+<td>1.000000</td>
+<td>88.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">25%</td>
+<td>3.000000</td>
+<td>4310.000000</td>
+<td>3.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">50%</td>
+<td>4.000000</td>
+<td>8924.000000</td>
+<td>4.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">75%</td>
+<td>6.000000</td>
+<td>13545.000000</td>
+<td>4.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">max</td>
+<td>10.000000</td>
+<td>18088.000000</td>
+<td>5.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The dataset includes many perceptual variables, as well as identifiers like <code>id</code> and <code>brand</code>.</p>
+<p>Following the variable importance comparison shown in the class example (Session 5, Slide 75), I focus on the perception-based features only, excluding ID and brand metadata.</p>
+<p><img src="../images/credit_card_example_table.png" class="img-fluid"></p>
+</section>
+<section id="statistical-feature-importance-methods" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-feature-importance-methods">Statistical Feature Importance Methods</h3>
+<p>I begin by calculating three regression-based importance metrics:</p>
+<ul>
+<li><strong>Pearson correlation</strong> measures the raw linear association between each predictor and satisfaction.</li>
+<li><strong>Standardized regression coefficients</strong> come from fitting a linear model on standardized data and show the relative impact per standard deviation change.</li>
+<li><strong>Usefulness</strong> quantifies the drop in <span class="math inline">\(R^2\)</span> when each variable is removed from a full linear model.</li>
+</ul>
+<div id="1fad3609" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"satisfaction"</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"satisfaction"</span>, <span class="st">"id"</span>, <span class="st">"brand"</span>])</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pearson Correlation</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>correlations <span class="op">=</span> X.corrwith(y)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardized Coefficients</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> pd.DataFrame(scaler.fit_transform(X), columns<span class="op">=</span>X.columns)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>y_scaled <span class="op">=</span> (y <span class="op">-</span> y.mean()) <span class="op">/</span> y.std()</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>lr <span class="op">=</span> LinearRegression()</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>lr.fit(X_scaled, y_scaled)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>standardized_coefs <span class="op">=</span> pd.Series(lr.coef_, index<span class="op">=</span>X.columns)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Usefulness: ΔR² from dropping one variable at a time</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>full_r2 <span class="op">=</span> r2_score(y, LinearRegression().fit(X, y).predict(X))</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> {}</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> X.columns:</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    X_drop <span class="op">=</span> X.drop(columns<span class="op">=</span>[col])</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    y_pred_drop <span class="op">=</span> LinearRegression().fit(X_drop, y).predict(X_drop)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    r2_drop <span class="op">=</span> r2_score(y, y_pred_drop)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    usefulness[col] <span class="op">=</span> full_r2 <span class="op">-</span> r2_drop</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> pd.Series(usefulness)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The table below summarizes these results:</p>
+<div id="928ba759" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pearson Correlation"</span>: correlations,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Standardized Coefficient"</span>: standardized_coefs,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Usefulness (ΔR²)"</span>: usefulness</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>summary_df.sort_values(<span class="st">"Usefulness (ΔR²)"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Pearson Correlation</th>
+<th data-quarto-table-cell-role="th">Standardized Coefficient</th>
+<th data-quarto-table-cell-role="th">Usefulness (ΔR²)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">impact</td>
+<td>0.255</td>
+<td>0.128</td>
+<td>0.011</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">trust</td>
+<td>0.256</td>
+<td>0.116</td>
+<td>0.008</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">service</td>
+<td>0.251</td>
+<td>0.088</td>
+<td>0.005</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">differs</td>
+<td>0.185</td>
+<td>0.028</td>
+<td>0.001</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">appealing</td>
+<td>0.208</td>
+<td>0.034</td>
+<td>0.001</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">build</td>
+<td>0.192</td>
+<td>0.020</td>
+<td>0.000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">easy</td>
+<td>0.213</td>
+<td>0.022</td>
+<td>0.000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">rewarding</td>
+<td>0.195</td>
+<td>0.005</td>
+<td>0.000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">popular</td>
+<td>0.171</td>
+<td>0.017</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Note: The values in the table below differ from those shown above. This is expected, as I use a different (synthetic) dataset and Python-based implementations. The goal here is to replicate the analysis process, not to match specific numbers.</p>
+</section>
+<section id="model-based-variable-importance" class="level3">
+<h3 class="anchored" data-anchor-id="model-based-variable-importance">Model-Based Variable Importance</h3>
+<p>In this section, I estimate variable importance using three model-driven approaches:</p>
+<ul>
+<li><strong>Random Forest Gini importance</strong>: Reflects how much each variable reduces impurity in tree-based models.</li>
+<li><strong>SHAP values</strong>: A Shapley-inspired method that attributes contribution of each variable to model predictions.</li>
+<li><strong>Johnson’s relative weights</strong>: A decomposition of model <span class="math inline">\(R^2\)</span> based on the orthogonal projection of predictors (approximated via PCA).</li>
+</ul>
+<p>To approximate Johnson’s relative weights without using unstable packages, I use a PCA-based projection method that decomposes variance and reweights predictors based on their contribution to model <span class="math inline">\(R^2\)</span>.</p>
+<p>This gives us a stable and interpretable measure of relative variable importance, conceptually aligned with the Shapley-based decomposition.</p>
+<p>Together, these three approaches reflect how variables contribute to prediction in nonlinear, interactive, and multicollinear contexts.</p>
+<div id="1c1a903e" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shap</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Random Forest Gini</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">500</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>rf.fit(X, y)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>gini_importance <span class="op">=</span> pd.Series(rf.feature_importances_, index<span class="op">=</span>X.columns)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>explainer <span class="op">=</span> shap.Explainer(rf, X)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>shap_values <span class="op">=</span> explainer(X)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>shap_importance <span class="op">=</span> pd.Series(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    np.<span class="bu">abs</span>(shap_values.values).mean(axis<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>X.columns</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Johnson's Relative Weights (PCA approximation)</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA()</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> pca.fit_transform(X)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>lr_pca <span class="op">=</span> LinearRegression().fit(Z, y)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>beta_z <span class="op">=</span> lr_pca.coef_</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>var_z <span class="op">=</span> np.var(Z, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>r2 <span class="op">=</span> lr_pca.score(Z, y)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>Lambda <span class="op">=</span> (beta_z <span class="op">**</span> <span class="dv">2</span>) <span class="op">*</span> var_z</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>raw_weights <span class="op">=</span> np.dot(pca.components_.T <span class="op">**</span> <span class="dv">2</span>, Lambda)</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>johnson_weight <span class="op">=</span> raw_weights <span class="op">/</span> raw_weights.<span class="bu">sum</span>() <span class="op">*</span> r2</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>johnson_weight <span class="op">=</span> pd.Series(johnson_weight, index<span class="op">=</span>X.columns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>  7%|=                   | 166/2553 [00:11&lt;02:38]         7%|=                   | 183/2553 [00:12&lt;02:35]         8%|==                  | 197/2553 [00:13&lt;02:35]         8%|==                  | 212/2553 [00:14&lt;02:34]         9%|==                  | 226/2553 [00:15&lt;02:34]         9%|==                  | 242/2553 [00:16&lt;02:32]        10%|==                  | 258/2553 [00:17&lt;02:31]        11%|==                  | 274/2553 [00:18&lt;02:29]        11%|==                  | 289/2553 [00:19&lt;02:28]        12%|==                  | 306/2553 [00:20&lt;02:26]        13%|===                 | 320/2553 [00:21&lt;02:26]        13%|===                 | 335/2553 [00:22&lt;02:25]        14%|===                 | 353/2553 [00:23&lt;02:23]        14%|===                 | 369/2553 [00:24&lt;02:22]        15%|===                 | 385/2553 [00:25&lt;02:20]        16%|===                 | 402/2553 [00:26&lt;02:19]        16%|===                 | 418/2553 [00:27&lt;02:17]        17%|===                 | 434/2553 [00:28&lt;02:16]        18%|====                | 449/2553 [00:29&lt;02:15]        18%|====                | 468/2553 [00:30&lt;02:13]        19%|====                | 485/2553 [00:31&lt;02:12]        19%|====                | 497/2553 [00:32&lt;02:12]        20%|====                | 512/2553 [00:33&lt;02:11]        21%|====                | 526/2553 [00:34&lt;02:11]        21%|====                | 542/2553 [00:35&lt;02:09]        22%|====                | 558/2553 [00:36&lt;02:08]        22%|====                | 572/2553 [00:37&lt;02:08]        23%|=====               | 586/2553 [00:38&lt;02:07]        24%|=====               | 602/2553 [00:39&lt;02:06]        24%|=====               | 619/2553 [00:40&lt;02:04]        25%|=====               | 633/2553 [00:41&lt;02:04]        25%|=====               | 648/2553 [00:42&lt;02:03]        26%|=====               | 664/2553 [00:43&lt;02:02]        27%|=====               | 682/2553 [00:44&lt;02:00]        27%|=====               | 698/2553 [00:45&lt;01:59]        28%|======              | 713/2553 [00:46&lt;01:58]        29%|======              | 729/2553 [00:47&lt;01:57]        29%|======              | 745/2553 [00:48&lt;01:56]        30%|======              | 760/2553 [00:49&lt;01:55]        30%|======              | 774/2553 [00:50&lt;01:54]        31%|======              | 788/2553 [00:51&lt;01:54]        32%|======              | 807/2553 [00:52&lt;01:52]        32%|======              | 821/2553 [00:53&lt;01:51]        33%|=======             | 836/2553 [00:54&lt;01:50]        33%|=======             | 853/2553 [00:55&lt;01:49]        34%|=======             | 869/2553 [00:56&lt;01:48]        35%|=======             | 885/2553 [00:57&lt;01:47]        35%|=======             | 900/2553 [00:58&lt;01:46]        36%|=======             | 915/2553 [00:59&lt;01:45]        36%|=======             | 927/2553 [01:00&lt;01:45]        37%|=======             | 943/2553 [01:01&lt;01:44]        38%|========            | 958/2553 [01:02&lt;01:43]        38%|========            | 972/2553 [01:03&lt;01:42]        39%|========            | 989/2553 [01:04&lt;01:41]        39%|========            | 1003/2553 [01:05&lt;01:40]        40%|========            | 1018/2553 [01:06&lt;01:39]        41%|========            | 1034/2553 [01:07&lt;01:38]        41%|========            | 1049/2553 [01:08&lt;01:37]        42%|========            | 1064/2553 [01:09&lt;01:36]        42%|========            | 1079/2553 [01:10&lt;01:35]        43%|=========           | 1094/2553 [01:11&lt;01:34]        43%|=========           | 1109/2553 [01:12&lt;01:33]        44%|=========           | 1125/2553 [01:13&lt;01:32]        45%|=========           | 1140/2553 [01:14&lt;01:31]        45%|=========           | 1156/2553 [01:15&lt;01:30]        46%|=========           | 1172/2553 [01:16&lt;01:29]        47%|=========           | 1188/2553 [01:17&lt;01:28]        47%|=========           | 1205/2553 [01:18&lt;01:27]        48%|==========          | 1222/2553 [01:19&lt;01:26]        48%|==========          | 1235/2553 [01:20&lt;01:25]        49%|==========          | 1251/2553 [01:21&lt;01:24]        50%|==========          | 1266/2553 [01:22&lt;01:23]        50%|==========          | 1282/2553 [01:23&lt;01:22]        51%|==========          | 1298/2553 [01:24&lt;01:21]        52%|==========          | 1315/2553 [01:25&lt;01:20]        52%|==========          | 1331/2553 [01:26&lt;01:18]        53%|===========         | 1347/2553 [01:27&lt;01:17]        53%|===========         | 1362/2553 [01:28&lt;01:16]        54%|===========         | 1380/2553 [01:29&lt;01:15]        55%|===========         | 1396/2553 [01:30&lt;01:14]        55%|===========         | 1414/2553 [01:31&lt;01:13]        56%|===========         | 1430/2553 [01:32&lt;01:12]        57%|===========         | 1448/2553 [01:33&lt;01:10]        57%|===========         | 1465/2553 [01:34&lt;01:09]        58%|============        | 1483/2553 [01:35&lt;01:08]        59%|============        | 1500/2553 [01:36&lt;01:07]        59%|============        | 1516/2553 [01:37&lt;01:06]        60%|============        | 1534/2553 [01:38&lt;01:05]        61%|============        | 1553/2553 [01:39&lt;01:03]        62%|============        | 1572/2553 [01:40&lt;01:02]        62%|============        | 1590/2553 [01:41&lt;01:01]        63%|=============       | 1606/2553 [01:42&lt;01:00]        64%|=============       | 1622/2553 [01:43&lt;00:59]        64%|=============       | 1640/2553 [01:44&lt;00:57]        65%|=============       | 1657/2553 [01:45&lt;00:56]        66%|=============       | 1675/2553 [01:46&lt;00:55]        66%|=============       | 1692/2553 [01:47&lt;00:54]        67%|=============       | 1711/2553 [01:48&lt;00:53]        68%|==============      | 1728/2553 [01:49&lt;00:52]        68%|==============      | 1744/2553 [01:50&lt;00:51]        69%|==============      | 1763/2553 [01:51&lt;00:49]        70%|==============      | 1779/2553 [01:52&lt;00:48]        70%|==============      | 1796/2553 [01:53&lt;00:47]        71%|==============      | 1812/2553 [01:54&lt;00:46]        72%|==============      | 1830/2553 [01:55&lt;00:45]        72%|==============      | 1847/2553 [01:56&lt;00:44]        73%|===============     | 1863/2553 [01:57&lt;00:43]        74%|===============     | 1881/2553 [01:58&lt;00:42]        74%|===============     | 1896/2553 [01:59&lt;00:41]        75%|===============     | 1911/2553 [02:00&lt;00:40]        75%|===============     | 1926/2553 [02:01&lt;00:39]        76%|===============     | 1945/2553 [02:02&lt;00:38]        77%|===============     | 1960/2553 [02:03&lt;00:37]        77%|===============     | 1977/2553 [02:04&lt;00:36]        78%|================    | 1992/2553 [02:05&lt;00:35]        79%|================    | 2011/2553 [02:06&lt;00:33]        79%|================    | 2026/2553 [02:07&lt;00:33]        80%|================    | 2043/2553 [02:08&lt;00:31]        81%|================    | 2063/2553 [02:09&lt;00:30]        82%|================    | 2083/2553 [02:10&lt;00:29]        82%|================    | 2103/2553 [02:11&lt;00:28]        83%|=================   | 2122/2553 [02:12&lt;00:26]        84%|=================   | 2137/2553 [02:13&lt;00:25]        84%|=================   | 2156/2553 [02:14&lt;00:24]        85%|=================   | 2173/2553 [02:15&lt;00:23]        86%|=================   | 2192/2553 [02:16&lt;00:22]        87%|=================   | 2213/2553 [02:17&lt;00:21]        87%|=================   | 2230/2553 [02:18&lt;00:19]        88%|==================  | 2249/2553 [02:19&lt;00:18]        89%|==================  | 2268/2553 [02:20&lt;00:17]        90%|==================  | 2286/2553 [02:21&lt;00:16]        90%|==================  | 2304/2553 [02:22&lt;00:15]        91%|==================  | 2324/2553 [02:23&lt;00:14]        92%|==================  | 2341/2553 [02:24&lt;00:13]        92%|==================  | 2361/2553 [02:25&lt;00:11]        93%|=================== | 2381/2553 [02:26&lt;00:10]        94%|=================== | 2400/2553 [02:27&lt;00:09]        95%|=================== | 2419/2553 [02:28&lt;00:08]        96%|=================== | 2439/2553 [02:29&lt;00:06]        96%|=================== | 2458/2553 [02:30&lt;00:05]        97%|=================== | 2476/2553 [02:31&lt;00:04]        98%|===================| 2495/2553 [02:32&lt;00:03]        98%|===================| 2511/2553 [02:33&lt;00:02]        99%|===================| 2526/2553 [02:34&lt;00:01]       100%|===================| 2544/2553 [02:35&lt;00:00]       </code></pre>
+</div>
+</div>
+<p>The table below summarizes these results:</p>
+<div id="bc9370c4" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Gini (RF)"</span>: gini_importance,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SHAP (mean abs)"</span>: shap_importance,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Johnson Weight"</span>: johnson_weight</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">4</span>).sort_values(<span class="st">"SHAP (mean abs)"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>model_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Gini (RF)</th>
+<th data-quarto-table-cell-role="th">SHAP (mean abs)</th>
+<th data-quarto-table-cell-role="th">Johnson Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">impact</td>
+<td>0.1396</td>
+<td>0.1418</td>
+<td>0.0105</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">service</td>
+<td>0.1361</td>
+<td>0.1235</td>
+<td>0.0143</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">trust</td>
+<td>0.1523</td>
+<td>0.1148</td>
+<td>0.0130</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">appealing</td>
+<td>0.0847</td>
+<td>0.0765</td>
+<td>0.0132</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">popular</td>
+<td>0.0953</td>
+<td>0.0614</td>
+<td>0.0091</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">easy</td>
+<td>0.0973</td>
+<td>0.0594</td>
+<td>0.0133</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">build</td>
+<td>0.0997</td>
+<td>0.0567</td>
+<td>0.0119</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">rewarding</td>
+<td>0.1055</td>
+<td>0.0549</td>
+<td>0.0150</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">differs</td>
+<td>0.0896</td>
+<td>0.0531</td>
+<td>0.0087</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Note: The values in the table below differ from those shown above. This is expected, as I use a different (synthetic) dataset and Python-based implementations. The goal here is to replicate the analysis process, not to match specific numbers.</p>
+</section>
+<section id="summary-table-of-results" class="level3">
+<h3 class="anchored" data-anchor-id="summary-table-of-results">Summary Table of Results</h3>
+<p>To wrap up the analysis, I combine all six importance metrics into a single summary table. These metrics span both traditional statistical and modern model-based approaches, offering different perspectives on what drives customer satisfaction.</p>
+<p>The six methods include:</p>
+<ul>
+<li><strong>Pearson correlation</strong></li>
+<li><strong>Standardized regression coefficient</strong></li>
+<li><strong>Usefulness (<span class="math inline">\(\Delta R^2\)</span>)</strong></li>
+<li><strong>Random Forest Gini importance</strong></li>
+<li><strong>SHAP value (mean absolute contribution)</strong></li>
+<li><strong>Johnson’s relative weights</strong></li>
+</ul>
+<p>By viewing all metrics side-by-side, we can identify variables that consistently rank highly and those that are more model-sensitive.</p>
+<div id="1cf201a6" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>full_df <span class="op">=</span> pd.concat([summary_df, model_df], axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>full_df <span class="op">=</span> full_df.sort_values(<span class="st">"SHAP (mean abs)"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>full_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Pearson Correlation</th>
+<th data-quarto-table-cell-role="th">Standardized Coefficient</th>
+<th data-quarto-table-cell-role="th">Usefulness (ΔR²)</th>
+<th data-quarto-table-cell-role="th">Gini (RF)</th>
+<th data-quarto-table-cell-role="th">SHAP (mean abs)</th>
+<th data-quarto-table-cell-role="th">Johnson Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">impact</td>
+<td>0.255</td>
+<td>0.128</td>
+<td>0.011</td>
+<td>0.140</td>
+<td>0.142</td>
+<td>0.010</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">service</td>
+<td>0.251</td>
+<td>0.088</td>
+<td>0.005</td>
+<td>0.136</td>
+<td>0.124</td>
+<td>0.014</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">trust</td>
+<td>0.256</td>
+<td>0.116</td>
+<td>0.008</td>
+<td>0.152</td>
+<td>0.115</td>
+<td>0.013</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">appealing</td>
+<td>0.208</td>
+<td>0.034</td>
+<td>0.001</td>
+<td>0.085</td>
+<td>0.076</td>
+<td>0.013</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">popular</td>
+<td>0.171</td>
+<td>0.017</td>
+<td>0.000</td>
+<td>0.095</td>
+<td>0.061</td>
+<td>0.009</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">easy</td>
+<td>0.213</td>
+<td>0.022</td>
+<td>0.000</td>
+<td>0.097</td>
+<td>0.059</td>
+<td>0.013</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">build</td>
+<td>0.192</td>
+<td>0.020</td>
+<td>0.000</td>
+<td>0.100</td>
+<td>0.057</td>
+<td>0.012</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">rewarding</td>
+<td>0.195</td>
+<td>0.005</td>
+<td>0.000</td>
+<td>0.106</td>
+<td>0.055</td>
+<td>0.015</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">differs</td>
+<td>0.185</td>
+<td>0.028</td>
+<td>0.001</td>
+<td>0.090</td>
+<td>0.053</td>
+<td>0.009</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="ddbf3019" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>top_vars <span class="op">=</span> full_df.sort_values(<span class="st">"SHAP (mean abs)"</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">6</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>methods_to_plot <span class="op">=</span> [</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pearson Correlation"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Standardized Coefficient"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Usefulness (ΔR²)"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Gini (RF)"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SHAP (mean abs)"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Johnson Weight"</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>top_vars[methods_to_plot].plot(kind<span class="op">=</span><span class="st">'bar'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Variable Importance Across Methods (Top 6 Variables)"</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Importance Score"</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Variable"</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"upper right"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_questions_files/figure-html/cell-15-output-1.png" width="950" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Across all six methods, <code>impact</code>, <code>trust</code>, and <code>service</code> consistently rank as the top drivers of satisfaction. These variables score highly not only in correlation-based methods but also in model-driven measures like SHAP and Gini importance.</p>
+<p>Other features such as <code>popular</code>, <code>appealing</code>, and <code>easy</code> show more variation in their rankings depending on the method used—highlighting how different models capture different aspects of influence.</p>
+<p>The combined analysis confirms a small set of robust predictors, while also revealing that feature importance can be sensitive to the assumptions and structure of the chosen method.</p>
+</section>
+<section id="extended-comparison-with-advanced-models" class="level3">
+<h3 class="anchored" data-anchor-id="extended-comparison-with-advanced-models">Extended Comparison with Advanced Models</h3>
+<p>To complement the earlier methods, I explore additional model-based techniques for estimating feature importance. These include:</p>
+<ul>
+<li><strong>XGBoost</strong>: A gradient-boosted tree ensemble model that outputs multiple importance metrics, such as gain and cover.</li>
+<li><strong>Multilayer Perceptron (MLP)</strong>: A fully connected neural network, for which we calculate permutation-based importance to assess how sensitive the model is to each input feature.</li>
+</ul>
+<p>These advanced models provide robustness checks and capture complex non-linear interactions that traditional methods may overlook.</p>
+<div id="098c0be6" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPRegressor</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.inspection <span class="im">import</span> permutation_importance</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>xgb_model <span class="op">=</span> xgb.XGBRegressor(n_estimators<span class="op">=</span><span class="dv">500</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>xgb_model.fit(X, y)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>xgb_importance <span class="op">=</span> pd.Series(xgb_model.feature_importances_, index<span class="op">=</span>X.columns)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>xgb_importance_df <span class="op">=</span> xgb_importance.sort_values(ascending<span class="op">=</span><span class="va">False</span>).to_frame(<span class="st">"XGBoost Gain"</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>mlp <span class="op">=</span> MLPRegressor(hidden_layer_sizes<span class="op">=</span>(<span class="dv">100</span>,), max_iter<span class="op">=</span><span class="dv">1000</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>mlp.fit(X, y)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>perm <span class="op">=</span> permutation_importance(mlp, X, y, n_repeats<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>mlp_importance <span class="op">=</span> pd.Series(perm.importances_mean, index<span class="op">=</span>X.columns).sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>mlp_importance_df <span class="op">=</span> mlp_importance.to_frame(<span class="st">"MLP Permutation Importance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The table below summarizes these results:</p>
+<div id="925adfe1" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>advanced_df <span class="op">=</span> pd.concat([xgb_importance_df, mlp_importance_df], axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>advanced_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">XGBoost Gain</th>
+<th data-quarto-table-cell-role="th">MLP Permutation Importance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">trust</td>
+<td>0.2529</td>
+<td>0.1116</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">impact</td>
+<td>0.1741</td>
+<td>0.0957</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">service</td>
+<td>0.1064</td>
+<td>0.0876</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">build</td>
+<td>0.0927</td>
+<td>0.0676</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">easy</td>
+<td>0.0916</td>
+<td>0.0673</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">popular</td>
+<td>0.0768</td>
+<td>0.0681</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">differs</td>
+<td>0.0695</td>
+<td>0.0672</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">appealing</td>
+<td>0.0683</td>
+<td>0.0753</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">rewarding</td>
+<td>0.0677</td>
+<td>0.0781</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Advanced models further reinforce the role of a few key predictors. In the XGBoost model, <code>trust</code> stands out with the highest gain score, followed by <code>impact</code> and <code>service</code>. These same features are also top-ranked in the MLP model, based on permutation importance.</p>
+<p>While there are slight variations in ordering, the consistency across both linear and nonlinear methods—including tree ensembles and neural networks—underscores the robustness of these drivers in explaining satisfaction.</p>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<div id="e2d2b062" class="cell" data-execution_count="17">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>all_metrics_df <span class="op">=</span> pd.concat([summary_df, model_df, advanced_df], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>normalized_df <span class="op">=</span> all_metrics_df.copy()</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>normalized_df <span class="op">=</span> normalized_df.<span class="bu">apply</span>(<span class="kw">lambda</span> col: (col <span class="op">-</span> col.<span class="bu">min</span>()) <span class="op">/</span> (col.<span class="bu">max</span>() <span class="op">-</span> col.<span class="bu">min</span>()))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">7</span>))</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>sns.heatmap(normalized_df.T, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>, fmt<span class="op">=</span><span class="st">".2f"</span>, linewidths<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Normalized Feature Importance Across 8 Methods"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Variable"</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Importance Metric"</span>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_questions_files/figure-html/cell-18-output-1.png" width="1065" height="662" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Across all eight importance metrics—from classical correlation to modern machine learning techniques—<code>trust</code> and <code>impact</code> consistently emerge as the most influential predictors of customer satisfaction. These two variables dominate not only in statistical methods (e.g., Pearson correlation, standardized coefficients) but also in model-driven metrics like SHAP, Gini importance, and XGBoost gain.</p>
+<p><code>Service</code> also ranks highly in several methods, further supporting its role as a key driver. Meanwhile, features such as <code>differs</code>, <code>rewarding</code>, and <code>popular</code> receive little to no importance across nearly all methods, suggesting minimal predictive value in this context.</p>
+<p>Notably, the heatmap also reveals areas of model sensitivity. For instance, <code>rewarding</code> scores very low in most methods but peaks under Johnson’s relative weights—highlighting how different models capture different aspects of importance.</p>
+<p>Overall, the triangulation of insights across diverse methods reinforces confidence in the top features while also providing transparency around model-specific variance. This multi-method approach not only strengthens interpretability but also increases robustness in actionable recommendations.</p>
+
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Unsupervised and Supervised Machine Learning: From K-Means to Key Drivers"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Miya Huang"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">callout-appearance:</span><span class="co"> minimal # this hides the blue "i" icon on .callout-notes</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">    math: mathjax</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>In this blog post, I explore two fundamental tasks in machine learning—**unsupervised clustering** and **supervised driver analysis**—using Python and real-world marketing datasets. </span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>The first part focuses on implementing the K-Means algorithm from scratch, applying it to the well-known Palmer Penguins dataset. Through step-by-step visualizations, I illustrate how the algorithm identifies natural groupings based on body measurements, and evaluate the clustering quality using WCSS and silhouette scores.</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>In the second part, I turn to key driver analysis using a synthetic customer satisfaction dataset. I replicate and expand a benchmark comparison from class that evaluates variable importance using six distinct methods: Pearson correlation, standardized regression coefficients, "usefulness" (change in R²), Shapley values (LMG), Johnson's relative weights, and Mean Decrease in Gini from a random forest model.</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>Together, these two analyses reflect both the structure-finding and insight-generating power of machine learning in marketing analytics.</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualizing K-Means: Clustering Penguins from Scratch</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### What is K-Means?</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>K-Means is an unsupervised machine learning algorithm used for discovering clusters in data based on similarity (typically using Euclidean distance). It is widely used in marketing segmentation, image compression, and pattern recognition.</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>The goal is to partition data into K groups such that data points within each cluster are as close as possible to each other, and as far as possible from points in other clusters.</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="fu">### Mathematical Logic</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>This section introduces the mathematical foundation of the K-Means clustering algorithm, which is one of the most popular unsupervised learning methods for grouping similar observations. The goal of K-Means is to assign $n$ observations into $K$ distinct, non-overlapping clusters based on feature similarity, in such a way that the within-cluster variation is minimized.</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>Suppose we have $n$ observations, each represented by a $p$-dimensional feature vector $\mathbf{x}_i \in \mathbb{R}^p$, for $i = 1, \ldots, n$. We want to partition the observations into $K$ clusters, denoted as $C_1, \ldots, C_K$, such that:</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Every observation belongs to exactly one cluster: $\bigcup_{k=1}^K C_k = <span class="sc">\{</span>1, \ldots, n<span class="sc">\}</span>$</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No overlap between clusters: $C_k \cap C_{k'} = \emptyset$ for all $k \ne k'$</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>The objective of K-Means is to minimize the total within-cluster sum of squared Euclidean distances, defined as:</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>\text{WCSS} = \sum_{k=1}^K \sum_{i \in C_k} \| \mathbf{x}_i - \boldsymbol{\mu}_k \|^2</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>where:</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$C_k$ is the set of indices for points assigned to cluster $k$</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\boldsymbol{\mu}_k$ is the centroid (mean vector) of cluster $k$, computed as:</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>\boldsymbol{\mu}_k = \frac{1}{|C_k|} \sum_{i \in C_k} \mathbf{x}_i</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>In words, the WCSS measures how tightly grouped the points in each cluster are around their respective cluster centers.</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a><span class="fu">#### K-Means Algorithm (Iterative Optimization)</span></span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>K-Means uses a simple iterative algorithm to find a local minimum of the WCSS objective:</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Initialize**: Randomly select $K$ observations as initial cluster centroids $\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K$.</span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Assign Step**: For each observation $\mathbf{x}_i$, assign it to the nearest cluster centroid using Euclidean distance:</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a>\text{Cluster}(\mathbf{x}_i) = \arg\min_{k \in <span class="sc">\{</span>1, \ldots, K<span class="sc">\}</span>} \| \mathbf{x}_i - \boldsymbol{\mu}_k \|^2</span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Update Step**: For each cluster $k$, recompute its centroid as the mean of all points currently assigned to it:</span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>\boldsymbol{\mu}_k^{\text{new}} = \frac{1}{|C_k|} \sum_{\mathbf{x}_i \in C_k} \mathbf{x}_i</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Repeat** Steps 2–3 until cluster assignments no longer change (convergence).</span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Notes on Optimization</span></span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The K-Means algorithm is not guaranteed to find the global minimum of the WCSS, because the optimization is non-convex and depends on initialization.</span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A common practical strategy is to run the algorithm multiple times with different initializations and choose the best solution (lowest WCSS).</span>
+<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cluster labels are arbitrary: permuting the label numbers does not change the structure.</span>
+<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Why Use Euclidean Distance?</span></span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a>In standard K-Means, the measure of similarity is Euclidean distance. That’s why it's important to standardize the features before clustering (especially when variables are on different scales), so that no single variable dominates the distance metric.</span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualizing the K-Means Algorithm Step-by-Step</span></span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a>To better understand how the K-Means algorithm learns and adjusts cluster boundaries, I created an animation that visualizes each iteration of the algorithm applied to the penguins dataset.</span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a>The algorithm works by repeating two simple steps:</span>
+<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Assignment**: Each point is assigned to the nearest centroid.</span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Update**: Each centroid is recalculated as the mean of the points assigned to it.</span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>This process continues until the centroids stop moving significantly—i.e., the algorithm converges.</span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a>The animation below illustrates this iterative process using <span class="in">`bill_length_mm`</span> and <span class="in">`flipper_length_mm`</span> as features, with $K = 3$ clusters. Each frame represents one iteration. Data points are colored by cluster assignment, and the black "×" marks indicate the current centroid positions.</span>
+<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a><span class="al">![](../images/kmeans_steps.gif)</span></span>
+<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a><span class="fu">### Custom vs. Built-in K-Means: A Side-by-Side Comparison</span></span>
+<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a>To evaluate the correctness and effectiveness of the custom K-Means algorithm I implemented, I compare its performance against the built-in <span class="in">`KMeans`</span> implementation from the <span class="in">`scikit-learn`</span> library. Specifically, I use $K = 3$ clusters and assess the clustering results using two metrics: **Within-Cluster Sum of Squares (WCSS)** and **Silhouette Score**.</span>
+<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb20-111"><a href="#cb20-111" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb20-112"><a href="#cb20-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pd.read_csv(<span class="st">"../data/palmer_penguins.csv"</span>).dropna()</span>
+<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a>penguins.head()</span>
+<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-119"><a href="#cb20-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> penguins[[<span class="st">"bill_length_mm"</span>, <span class="st">"flipper_length_mm"</span>]].values</span>
+<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-122"><a href="#cb20-122" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb20-123"><a href="#cb20-123" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-125"><a href="#cb20-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-126"><a href="#cb20-126" aria-hidden="true" tabindex="-1"></a>Here is the self-written function for K-Means, which initializes centroids randomly and iteratively updates them until convergence. The logic matches the standard K-Means algorithm discussed above.</span>
+<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-130"><a href="#cb20-130" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kmeans_custom(X, k, max_iter<span class="op">=</span><span class="dv">100</span>):</span>
+<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a>    n_samples, n_features <span class="op">=</span> X.shape</span>
+<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a>    np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a>    centroids <span class="op">=</span> X[np.random.choice(n_samples, k, replace<span class="op">=</span><span class="va">False</span>)]</span>
+<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(max_iter):</span>
+<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a>        distances <span class="op">=</span> np.linalg.norm(X[:, np.newaxis] <span class="op">-</span> centroids, axis<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a>        labels <span class="op">=</span> np.argmin(distances, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-142"><a href="#cb20-142" aria-hidden="true" tabindex="-1"></a>        new_centroids <span class="op">=</span> np.array([X[labels <span class="op">==</span> i].mean(axis<span class="op">=</span><span class="dv">0</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(k)])</span>
+<span id="cb20-143"><a href="#cb20-143" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.allclose(centroids, new_centroids):</span>
+<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a>        centroids <span class="op">=</span> new_centroids</span>
+<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> labels, centroids</span>
+<span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a>We now apply both the custom implementation and the built-in <span class="in">`KMeans`</span> from scikit-learn to the same standardized dataset, using 3 clusters.</span>
+<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a>kmeans_sklearn <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">3</span>, n_init<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a>labels_builtin <span class="op">=</span> kmeans_sklearn.fit_predict(X_scaled)</span>
+<span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a>centroids_builtin <span class="op">=</span> kmeans_sklearn.cluster_centers_</span>
+<span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a>labels_custom, centroids_custom <span class="op">=</span> kmeans_custom(X_scaled, k<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a>To visually compare the clustering results, the plots below show the cluster assignments produced by the custom K-Means implementation (left) and the built-in <span class="in">`scikit-learn`</span> implementation (right). In both cases:</span>
+<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Points are colored by their assigned cluster.</span>
+<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Centroids are marked with black diamonds (custom) and red diamonds (built-in).</span>
+<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a>The plots confirm that both methods yield identical clustering structures, with near-perfect agreement in cluster boundaries and centroid positions.</span>
+<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>), sharex<span class="op">=</span><span class="va">True</span>, sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(X_scaled[:, <span class="dv">0</span>], X_scaled[:, <span class="dv">1</span>], c<span class="op">=</span>labels_custom, cmap<span class="op">=</span><span class="st">'Accent'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(<span class="op">*</span>centroids_custom.T, color<span class="op">=</span><span class="st">'black'</span>, marker<span class="op">=</span><span class="st">'D'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Centroid'</span>)</span>
+<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Custom K-Means Clustering"</span>)</span>
+<span id="cb20-181"><a href="#cb20-181" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend()</span>
+<span id="cb20-182"><a href="#cb20-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].scatter(X_scaled[:, <span class="dv">0</span>], X_scaled[:, <span class="dv">1</span>], c<span class="op">=</span>labels_builtin, cmap<span class="op">=</span><span class="st">'Accent'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].scatter(<span class="op">*</span>centroids_builtin.T, color<span class="op">=</span><span class="st">'red'</span>, marker<span class="op">=</span><span class="st">'D'</span>, s<span class="op">=</span><span class="dv">100</span>, label<span class="op">=</span><span class="st">'Centroid'</span>)</span>
+<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"scikit-learn KMeans Clustering"</span>)</span>
+<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].legend()</span>
+<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes:</span>
+<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Scaled Bill Length"</span>)</span>
+<span id="cb20-190"><a href="#cb20-190" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Scaled Flipper Length"</span>)</span>
+<span id="cb20-191"><a href="#cb20-191" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>)</span>
+<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-193"><a href="#cb20-193" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb20-194"><a href="#cb20-194" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-197"><a href="#cb20-197" aria-hidden="true" tabindex="-1"></a>We use two metrics to compare the quality of clustering:</span>
+<span id="cb20-198"><a href="#cb20-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-199"><a href="#cb20-199" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**WCSS**: Measures how compact the clusters are.</span>
+<span id="cb20-200"><a href="#cb20-200" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Silhouette Score**: Combines cohesion and separation; higher is better.</span>
+<span id="cb20-201"><a href="#cb20-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-204"><a href="#cb20-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-205"><a href="#cb20-205" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
+<span id="cb20-206"><a href="#cb20-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-207"><a href="#cb20-207" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_wcss(X, labels):</span>
+<span id="cb20-208"><a href="#cb20-208" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(np.linalg.norm(X[labels <span class="op">==</span> i] <span class="op">-</span> X[labels <span class="op">==</span> i].mean(axis<span class="op">=</span><span class="dv">0</span>))<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> i <span class="kw">in</span> np.unique(labels))</span>
+<span id="cb20-209"><a href="#cb20-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-210"><a href="#cb20-210" aria-hidden="true" tabindex="-1"></a>wcss_custom <span class="op">=</span> compute_wcss(X_scaled, labels_custom)</span>
+<span id="cb20-211"><a href="#cb20-211" aria-hidden="true" tabindex="-1"></a>sil_custom <span class="op">=</span> silhouette_score(X_scaled, labels_custom)</span>
+<span id="cb20-212"><a href="#cb20-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-213"><a href="#cb20-213" aria-hidden="true" tabindex="-1"></a>wcss_builtin <span class="op">=</span> kmeans_sklearn.inertia_</span>
+<span id="cb20-214"><a href="#cb20-214" aria-hidden="true" tabindex="-1"></a>sil_builtin <span class="op">=</span> silhouette_score(X_scaled, labels_builtin)</span>
+<span id="cb20-215"><a href="#cb20-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-216"><a href="#cb20-216" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Comparison of Custom vs. Built-in KMeans (K=3)"</span>)</span>
+<span id="cb20-217"><a href="#cb20-217" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Custom KMeans     → WCSS: </span><span class="sc">{</span>wcss_custom<span class="sc">:.2f}</span><span class="ss">, Silhouette: </span><span class="sc">{</span>sil_custom<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb20-218"><a href="#cb20-218" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Built-in KMeans   → WCSS: </span><span class="sc">{</span>wcss_builtin<span class="sc">:.2f}</span><span class="ss">, Silhouette: </span><span class="sc">{</span>sil_builtin<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb20-219"><a href="#cb20-219" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a>The comparison shows that the custom implementation of the K-Means algorithm produces results that are nearly identical to those of the built-in <span class="in">`KMeans`</span> from <span class="in">`scikit-learn`</span>.</span>
+<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **WCSS** values match exactly, indicating that the overall compactness of the clusters is the same.</span>
+<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **Silhouette Scores** are also identical, suggesting both methods achieve the same balance of intra-cluster cohesion and inter-cluster separation.</span>
+<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a>This confirms that the logic in the custom implementation is consistent with the standard approach, validating both the clustering assignments and the centroid updates.</span>
+<span id="cb20-227"><a href="#cb20-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-228"><a href="#cb20-228" aria-hidden="true" tabindex="-1"></a><span class="fu">### Determining the Optimal Number of Clusters (K)</span></span>
+<span id="cb20-229"><a href="#cb20-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-230"><a href="#cb20-230" aria-hidden="true" tabindex="-1"></a>Choosing the right number of clusters is a key decision in K-Means clustering. To determine the optimal $K$, we evaluate clustering performance across different values of $K$ using:</span>
+<span id="cb20-231"><a href="#cb20-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-232"><a href="#cb20-232" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**WCSS**: A lower WCSS indicates more compact clusters, but it always decreases with higher $K$.</span>
+<span id="cb20-233"><a href="#cb20-233" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Silhouette Score**: Balances cohesion and separation, with values closer to 1 indicating better-defined clusters.</span>
+<span id="cb20-234"><a href="#cb20-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-235"><a href="#cb20-235" aria-hidden="true" tabindex="-1"></a>We test $K = 2$ to $K = 7$ and plot both metrics to look for the "elbow" in the WCSS curve and the peak in the silhouette scores.</span>
+<span id="cb20-236"><a href="#cb20-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a>k_values <span class="op">=</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">8</span>)</span>
+<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-242"><a href="#cb20-242" aria-hidden="true" tabindex="-1"></a>wcss_list <span class="op">=</span> []</span>
+<span id="cb20-243"><a href="#cb20-243" aria-hidden="true" tabindex="-1"></a>silhouette_list <span class="op">=</span> []</span>
+<span id="cb20-244"><a href="#cb20-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-245"><a href="#cb20-245" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> k_values:</span>
+<span id="cb20-246"><a href="#cb20-246" aria-hidden="true" tabindex="-1"></a>    labels_k, _ <span class="op">=</span> kmeans_custom(X_scaled, k)</span>
+<span id="cb20-247"><a href="#cb20-247" aria-hidden="true" tabindex="-1"></a>    wcss <span class="op">=</span> compute_wcss(X_scaled, labels_k)</span>
+<span id="cb20-248"><a href="#cb20-248" aria-hidden="true" tabindex="-1"></a>    sil <span class="op">=</span> silhouette_score(X_scaled, labels_k)</span>
+<span id="cb20-249"><a href="#cb20-249" aria-hidden="true" tabindex="-1"></a>    wcss_list.append(wcss)</span>
+<span id="cb20-250"><a href="#cb20-250" aria-hidden="true" tabindex="-1"></a>    silhouette_list.append(sil)</span>
+<span id="cb20-251"><a href="#cb20-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-252"><a href="#cb20-252" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-253"><a href="#cb20-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-254"><a href="#cb20-254" aria-hidden="true" tabindex="-1"></a>best_k_sil <span class="op">=</span> k_values[np.argmax(silhouette_list)]</span>
+<span id="cb20-255"><a href="#cb20-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-256"><a href="#cb20-256" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb20-257"><a href="#cb20-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-258"><a href="#cb20-258" aria-hidden="true" tabindex="-1"></a><span class="co"># WCSS</span></span>
+<span id="cb20-259"><a href="#cb20-259" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb20-260"><a href="#cb20-260" aria-hidden="true" tabindex="-1"></a>plt.plot(k_values, wcss_list, marker<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb20-261"><a href="#cb20-261" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Elbow (K=3)'</span>)</span>
+<span id="cb20-262"><a href="#cb20-262" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"WCSS by Number of Clusters"</span>)</span>
+<span id="cb20-263"><a href="#cb20-263" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Clusters (K)"</span>)</span>
+<span id="cb20-264"><a href="#cb20-264" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"WCSS"</span>)</span>
+<span id="cb20-265"><a href="#cb20-265" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb20-266"><a href="#cb20-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-267"><a href="#cb20-267" aria-hidden="true" tabindex="-1"></a><span class="co"># Silhouette</span></span>
+<span id="cb20-268"><a href="#cb20-268" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb20-269"><a href="#cb20-269" aria-hidden="true" tabindex="-1"></a>plt.plot(k_values, silhouette_list, marker<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb20-270"><a href="#cb20-270" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span>best_k_sil, color<span class="op">=</span><span class="st">'green'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="ss">f'Peak (K=</span><span class="sc">{</span>best_k_sil<span class="sc">}</span><span class="ss">)'</span>)</span>
+<span id="cb20-271"><a href="#cb20-271" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Silhouette Score by Number of Clusters"</span>)</span>
+<span id="cb20-272"><a href="#cb20-272" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Clusters (K)"</span>)</span>
+<span id="cb20-273"><a href="#cb20-273" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Silhouette Score"</span>)</span>
+<span id="cb20-274"><a href="#cb20-274" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb20-275"><a href="#cb20-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-276"><a href="#cb20-276" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb20-277"><a href="#cb20-277" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb20-278"><a href="#cb20-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-279"><a href="#cb20-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-280"><a href="#cb20-280" aria-hidden="true" tabindex="-1"></a>In the silhouette plot, we mark the true peak at $K=2$, where the score is highest. While this suggests that the data naturally splits into two well-separated clusters, the WCSS plot shows an elbow at $K=3$, which offers a better balance between complexity and explanatory power.</span>
+<span id="cb20-281"><a href="#cb20-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-282"><a href="#cb20-282" aria-hidden="true" tabindex="-1"></a>Both metrics are helpful, but may suggest different optimal values depending on what aspect of clustering is prioritized.</span>
+<span id="cb20-283"><a href="#cb20-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-284"><a href="#cb20-284" aria-hidden="true" tabindex="-1"></a><span class="fu">## Uncovering What Drives Outcomes: A Multimethod Feature Importance Analysis</span></span>
+<span id="cb20-285"><a href="#cb20-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-286"><a href="#cb20-286" aria-hidden="true" tabindex="-1"></a>In this section, I use supervised machine learning methods to identify which variables are most important in explaining a target outcome. </span>
+<span id="cb20-287"><a href="#cb20-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-288"><a href="#cb20-288" aria-hidden="true" tabindex="-1"></a>Following the framework introduced in Session 5, I compare six different variable importance measures: Pearson correlation, standardized regression coefficients, usefulness ($\Delta R^2$), Shapley values, Johnson's relative weights, and mean decrease in Gini from a random forest model.</span>
+<span id="cb20-289"><a href="#cb20-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-290"><a href="#cb20-290" aria-hidden="true" tabindex="-1"></a>This analysis helps uncover which features consistently drive the outcome across different model perspectives.</span>
+<span id="cb20-291"><a href="#cb20-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-292"><a href="#cb20-292" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction and Dataset Overview</span></span>
+<span id="cb20-293"><a href="#cb20-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-294"><a href="#cb20-294" aria-hidden="true" tabindex="-1"></a>We begin by loading the dataset and inspecting its structure. Our goal is to identify the response variable and the candidate predictors to be used in the driver analysis.</span>
+<span id="cb20-295"><a href="#cb20-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-298"><a href="#cb20-298" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-299"><a href="#cb20-299" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"../data/data_for_drivers_analysis.csv"</span>)</span>
+<span id="cb20-300"><a href="#cb20-300" aria-hidden="true" tabindex="-1"></a>df.describe()</span>
+<span id="cb20-301"><a href="#cb20-301" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-302"><a href="#cb20-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-303"><a href="#cb20-303" aria-hidden="true" tabindex="-1"></a>The dataset includes many perceptual variables, as well as identifiers like <span class="in">`id`</span> and <span class="in">`brand`</span>. </span>
+<span id="cb20-304"><a href="#cb20-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-305"><a href="#cb20-305" aria-hidden="true" tabindex="-1"></a>Following the variable importance comparison shown in the class example (Session 5, Slide 75), I focus on the perception-based features only, excluding ID and brand metadata.</span>
+<span id="cb20-306"><a href="#cb20-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-307"><a href="#cb20-307" aria-hidden="true" tabindex="-1"></a><span class="al">![](../images/credit_card_example_table.png)</span></span>
+<span id="cb20-308"><a href="#cb20-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-309"><a href="#cb20-309" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical Feature Importance Methods</span></span>
+<span id="cb20-310"><a href="#cb20-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-311"><a href="#cb20-311" aria-hidden="true" tabindex="-1"></a>I begin by calculating three regression-based importance metrics:</span>
+<span id="cb20-312"><a href="#cb20-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-313"><a href="#cb20-313" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Pearson correlation** measures the raw linear association between each predictor and satisfaction.</span>
+<span id="cb20-314"><a href="#cb20-314" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Standardized regression coefficients** come from fitting a linear model on standardized data and show the relative impact per standard deviation change.</span>
+<span id="cb20-315"><a href="#cb20-315" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Usefulness** quantifies the drop in $R^2$ when each variable is removed from a full linear model.</span>
+<span id="cb20-316"><a href="#cb20-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-319"><a href="#cb20-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-320"><a href="#cb20-320" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb20-321"><a href="#cb20-321" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb20-322"><a href="#cb20-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-323"><a href="#cb20-323" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"satisfaction"</span>]</span>
+<span id="cb20-324"><a href="#cb20-324" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"satisfaction"</span>, <span class="st">"id"</span>, <span class="st">"brand"</span>])</span>
+<span id="cb20-325"><a href="#cb20-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-326"><a href="#cb20-326" aria-hidden="true" tabindex="-1"></a><span class="co"># Pearson Correlation</span></span>
+<span id="cb20-327"><a href="#cb20-327" aria-hidden="true" tabindex="-1"></a>correlations <span class="op">=</span> X.corrwith(y)</span>
+<span id="cb20-328"><a href="#cb20-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-329"><a href="#cb20-329" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardized Coefficients</span></span>
+<span id="cb20-330"><a href="#cb20-330" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb20-331"><a href="#cb20-331" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> pd.DataFrame(scaler.fit_transform(X), columns<span class="op">=</span>X.columns)</span>
+<span id="cb20-332"><a href="#cb20-332" aria-hidden="true" tabindex="-1"></a>y_scaled <span class="op">=</span> (y <span class="op">-</span> y.mean()) <span class="op">/</span> y.std()</span>
+<span id="cb20-333"><a href="#cb20-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-334"><a href="#cb20-334" aria-hidden="true" tabindex="-1"></a>lr <span class="op">=</span> LinearRegression()</span>
+<span id="cb20-335"><a href="#cb20-335" aria-hidden="true" tabindex="-1"></a>lr.fit(X_scaled, y_scaled)</span>
+<span id="cb20-336"><a href="#cb20-336" aria-hidden="true" tabindex="-1"></a>standardized_coefs <span class="op">=</span> pd.Series(lr.coef_, index<span class="op">=</span>X.columns)</span>
+<span id="cb20-337"><a href="#cb20-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-338"><a href="#cb20-338" aria-hidden="true" tabindex="-1"></a><span class="co"># Usefulness: ΔR² from dropping one variable at a time</span></span>
+<span id="cb20-339"><a href="#cb20-339" aria-hidden="true" tabindex="-1"></a>full_r2 <span class="op">=</span> r2_score(y, LinearRegression().fit(X, y).predict(X))</span>
+<span id="cb20-340"><a href="#cb20-340" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> {}</span>
+<span id="cb20-341"><a href="#cb20-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-342"><a href="#cb20-342" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> X.columns:</span>
+<span id="cb20-343"><a href="#cb20-343" aria-hidden="true" tabindex="-1"></a>    X_drop <span class="op">=</span> X.drop(columns<span class="op">=</span>[col])</span>
+<span id="cb20-344"><a href="#cb20-344" aria-hidden="true" tabindex="-1"></a>    y_pred_drop <span class="op">=</span> LinearRegression().fit(X_drop, y).predict(X_drop)</span>
+<span id="cb20-345"><a href="#cb20-345" aria-hidden="true" tabindex="-1"></a>    r2_drop <span class="op">=</span> r2_score(y, y_pred_drop)</span>
+<span id="cb20-346"><a href="#cb20-346" aria-hidden="true" tabindex="-1"></a>    usefulness[col] <span class="op">=</span> full_r2 <span class="op">-</span> r2_drop</span>
+<span id="cb20-347"><a href="#cb20-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-348"><a href="#cb20-348" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> pd.Series(usefulness)</span>
+<span id="cb20-349"><a href="#cb20-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-350"><a href="#cb20-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-351"><a href="#cb20-351" aria-hidden="true" tabindex="-1"></a>The table below summarizes these results:</span>
+<span id="cb20-352"><a href="#cb20-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-355"><a href="#cb20-355" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-356"><a href="#cb20-356" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb20-357"><a href="#cb20-357" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pearson Correlation"</span>: correlations,</span>
+<span id="cb20-358"><a href="#cb20-358" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Standardized Coefficient"</span>: standardized_coefs,</span>
+<span id="cb20-359"><a href="#cb20-359" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Usefulness (ΔR²)"</span>: usefulness</span>
+<span id="cb20-360"><a href="#cb20-360" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb20-361"><a href="#cb20-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-362"><a href="#cb20-362" aria-hidden="true" tabindex="-1"></a>summary_df.sort_values(<span class="st">"Usefulness (ΔR²)"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-363"><a href="#cb20-363" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-364"><a href="#cb20-364" aria-hidden="true" tabindex="-1"></a>Note: The values in the table below differ from those shown above. This is expected, as I use a different (synthetic) dataset and Python-based implementations. The goal here is to replicate the analysis process, not to match specific numbers.</span>
+<span id="cb20-365"><a href="#cb20-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-366"><a href="#cb20-366" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model-Based Variable Importance</span></span>
+<span id="cb20-367"><a href="#cb20-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-368"><a href="#cb20-368" aria-hidden="true" tabindex="-1"></a>In this section, I estimate variable importance using three model-driven approaches:</span>
+<span id="cb20-369"><a href="#cb20-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-370"><a href="#cb20-370" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Random Forest Gini importance**: Reflects how much each variable reduces impurity in tree-based models.</span>
+<span id="cb20-371"><a href="#cb20-371" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**SHAP values**: A Shapley-inspired method that attributes contribution of each variable to model predictions.</span>
+<span id="cb20-372"><a href="#cb20-372" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Johnson’s relative weights**: A decomposition of model $R^2$ based on the orthogonal projection of predictors (approximated via PCA).</span>
+<span id="cb20-373"><a href="#cb20-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-374"><a href="#cb20-374" aria-hidden="true" tabindex="-1"></a>To approximate Johnson’s relative weights without using unstable packages, I use a PCA-based projection method that decomposes variance and reweights predictors based on their contribution to model $R^2$.</span>
+<span id="cb20-375"><a href="#cb20-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-376"><a href="#cb20-376" aria-hidden="true" tabindex="-1"></a>This gives us a stable and interpretable measure of relative variable importance, conceptually aligned with the Shapley-based decomposition.</span>
+<span id="cb20-377"><a href="#cb20-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-378"><a href="#cb20-378" aria-hidden="true" tabindex="-1"></a>Together, these three approaches reflect how variables contribute to prediction in nonlinear, interactive, and multicollinear contexts.</span>
+<span id="cb20-379"><a href="#cb20-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-382"><a href="#cb20-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-383"><a href="#cb20-383" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb20-384"><a href="#cb20-384" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb20-385"><a href="#cb20-385" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shap</span>
+<span id="cb20-386"><a href="#cb20-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-387"><a href="#cb20-387" aria-hidden="true" tabindex="-1"></a><span class="co"># Random Forest Gini</span></span>
+<span id="cb20-388"><a href="#cb20-388" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">500</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb20-389"><a href="#cb20-389" aria-hidden="true" tabindex="-1"></a>rf.fit(X, y)</span>
+<span id="cb20-390"><a href="#cb20-390" aria-hidden="true" tabindex="-1"></a>gini_importance <span class="op">=</span> pd.Series(rf.feature_importances_, index<span class="op">=</span>X.columns)</span>
+<span id="cb20-391"><a href="#cb20-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-392"><a href="#cb20-392" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP</span></span>
+<span id="cb20-393"><a href="#cb20-393" aria-hidden="true" tabindex="-1"></a>explainer <span class="op">=</span> shap.Explainer(rf, X)</span>
+<span id="cb20-394"><a href="#cb20-394" aria-hidden="true" tabindex="-1"></a>shap_values <span class="op">=</span> explainer(X)</span>
+<span id="cb20-395"><a href="#cb20-395" aria-hidden="true" tabindex="-1"></a>shap_importance <span class="op">=</span> pd.Series(</span>
+<span id="cb20-396"><a href="#cb20-396" aria-hidden="true" tabindex="-1"></a>    np.<span class="bu">abs</span>(shap_values.values).mean(axis<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb20-397"><a href="#cb20-397" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>X.columns</span>
+<span id="cb20-398"><a href="#cb20-398" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-399"><a href="#cb20-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-400"><a href="#cb20-400" aria-hidden="true" tabindex="-1"></a><span class="co"># Johnson's Relative Weights (PCA approximation)</span></span>
+<span id="cb20-401"><a href="#cb20-401" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA()</span>
+<span id="cb20-402"><a href="#cb20-402" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> pca.fit_transform(X)</span>
+<span id="cb20-403"><a href="#cb20-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-404"><a href="#cb20-404" aria-hidden="true" tabindex="-1"></a>lr_pca <span class="op">=</span> LinearRegression().fit(Z, y)</span>
+<span id="cb20-405"><a href="#cb20-405" aria-hidden="true" tabindex="-1"></a>beta_z <span class="op">=</span> lr_pca.coef_</span>
+<span id="cb20-406"><a href="#cb20-406" aria-hidden="true" tabindex="-1"></a>var_z <span class="op">=</span> np.var(Z, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb20-407"><a href="#cb20-407" aria-hidden="true" tabindex="-1"></a>r2 <span class="op">=</span> lr_pca.score(Z, y)</span>
+<span id="cb20-408"><a href="#cb20-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-409"><a href="#cb20-409" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
+<span id="cb20-410"><a href="#cb20-410" aria-hidden="true" tabindex="-1"></a>Lambda <span class="op">=</span> (beta_z <span class="op">**</span> <span class="dv">2</span>) <span class="op">*</span> var_z</span>
+<span id="cb20-411"><a href="#cb20-411" aria-hidden="true" tabindex="-1"></a>raw_weights <span class="op">=</span> np.dot(pca.components_.T <span class="op">**</span> <span class="dv">2</span>, Lambda)</span>
+<span id="cb20-412"><a href="#cb20-412" aria-hidden="true" tabindex="-1"></a>johnson_weight <span class="op">=</span> raw_weights <span class="op">/</span> raw_weights.<span class="bu">sum</span>() <span class="op">*</span> r2</span>
+<span id="cb20-413"><a href="#cb20-413" aria-hidden="true" tabindex="-1"></a>johnson_weight <span class="op">=</span> pd.Series(johnson_weight, index<span class="op">=</span>X.columns)</span>
+<span id="cb20-414"><a href="#cb20-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-415"><a href="#cb20-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-416"><a href="#cb20-416" aria-hidden="true" tabindex="-1"></a>The table below summarizes these results:</span>
+<span id="cb20-417"><a href="#cb20-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-420"><a href="#cb20-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-421"><a href="#cb20-421" aria-hidden="true" tabindex="-1"></a>model_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb20-422"><a href="#cb20-422" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Gini (RF)"</span>: gini_importance,</span>
+<span id="cb20-423"><a href="#cb20-423" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SHAP (mean abs)"</span>: shap_importance,</span>
+<span id="cb20-424"><a href="#cb20-424" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Johnson Weight"</span>: johnson_weight</span>
+<span id="cb20-425"><a href="#cb20-425" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">4</span>).sort_values(<span class="st">"SHAP (mean abs)"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-426"><a href="#cb20-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-427"><a href="#cb20-427" aria-hidden="true" tabindex="-1"></a>model_df</span>
+<span id="cb20-428"><a href="#cb20-428" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-429"><a href="#cb20-429" aria-hidden="true" tabindex="-1"></a>Note: The values in the table below differ from those shown above. This is expected, as I use a different (synthetic) dataset and Python-based implementations. The goal here is to replicate the analysis process, not to match specific numbers.</span>
+<span id="cb20-430"><a href="#cb20-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-431"><a href="#cb20-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-432"><a href="#cb20-432" aria-hidden="true" tabindex="-1"></a><span class="fu">### Summary Table of Results</span></span>
+<span id="cb20-433"><a href="#cb20-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-434"><a href="#cb20-434" aria-hidden="true" tabindex="-1"></a>To wrap up the analysis, I combine all six importance metrics into a single summary table. These metrics span both traditional statistical and modern model-based approaches, offering different perspectives on what drives customer satisfaction.</span>
+<span id="cb20-435"><a href="#cb20-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-436"><a href="#cb20-436" aria-hidden="true" tabindex="-1"></a>The six methods include:</span>
+<span id="cb20-437"><a href="#cb20-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-438"><a href="#cb20-438" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Pearson correlation**</span>
+<span id="cb20-439"><a href="#cb20-439" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Standardized regression coefficient**</span>
+<span id="cb20-440"><a href="#cb20-440" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Usefulness ($\Delta R^2$)**</span>
+<span id="cb20-441"><a href="#cb20-441" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Random Forest Gini importance**</span>
+<span id="cb20-442"><a href="#cb20-442" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**SHAP value (mean absolute contribution)**</span>
+<span id="cb20-443"><a href="#cb20-443" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Johnson’s relative weights**</span>
+<span id="cb20-444"><a href="#cb20-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-445"><a href="#cb20-445" aria-hidden="true" tabindex="-1"></a>By viewing all metrics side-by-side, we can identify variables that consistently rank highly and those that are more model-sensitive.</span>
+<span id="cb20-446"><a href="#cb20-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-449"><a href="#cb20-449" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-450"><a href="#cb20-450" aria-hidden="true" tabindex="-1"></a>full_df <span class="op">=</span> pd.concat([summary_df, model_df], axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb20-451"><a href="#cb20-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-452"><a href="#cb20-452" aria-hidden="true" tabindex="-1"></a>full_df <span class="op">=</span> full_df.sort_values(<span class="st">"SHAP (mean abs)"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-453"><a href="#cb20-453" aria-hidden="true" tabindex="-1"></a>full_df</span>
+<span id="cb20-454"><a href="#cb20-454" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-455"><a href="#cb20-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-458"><a href="#cb20-458" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-459"><a href="#cb20-459" aria-hidden="true" tabindex="-1"></a>top_vars <span class="op">=</span> full_df.sort_values(<span class="st">"SHAP (mean abs)"</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">6</span>)</span>
+<span id="cb20-460"><a href="#cb20-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-461"><a href="#cb20-461" aria-hidden="true" tabindex="-1"></a>methods_to_plot <span class="op">=</span> [</span>
+<span id="cb20-462"><a href="#cb20-462" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pearson Correlation"</span>,</span>
+<span id="cb20-463"><a href="#cb20-463" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Standardized Coefficient"</span>,</span>
+<span id="cb20-464"><a href="#cb20-464" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Usefulness (ΔR²)"</span>,</span>
+<span id="cb20-465"><a href="#cb20-465" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Gini (RF)"</span>,</span>
+<span id="cb20-466"><a href="#cb20-466" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SHAP (mean abs)"</span>,</span>
+<span id="cb20-467"><a href="#cb20-467" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Johnson Weight"</span></span>
+<span id="cb20-468"><a href="#cb20-468" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb20-469"><a href="#cb20-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-470"><a href="#cb20-470" aria-hidden="true" tabindex="-1"></a>top_vars[methods_to_plot].plot(kind<span class="op">=</span><span class="st">'bar'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb20-471"><a href="#cb20-471" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Variable Importance Across Methods (Top 6 Variables)"</span>)</span>
+<span id="cb20-472"><a href="#cb20-472" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Importance Score"</span>)</span>
+<span id="cb20-473"><a href="#cb20-473" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Variable"</span>)</span>
+<span id="cb20-474"><a href="#cb20-474" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb20-475"><a href="#cb20-475" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"upper right"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb20-476"><a href="#cb20-476" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb20-477"><a href="#cb20-477" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb20-478"><a href="#cb20-478" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-479"><a href="#cb20-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-480"><a href="#cb20-480" aria-hidden="true" tabindex="-1"></a>Across all six methods, <span class="in">`impact`</span>, <span class="in">`trust`</span>, and <span class="in">`service`</span> consistently rank as the top drivers of satisfaction. These variables score highly not only in correlation-based methods but also in model-driven measures like SHAP and Gini importance.</span>
+<span id="cb20-481"><a href="#cb20-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-482"><a href="#cb20-482" aria-hidden="true" tabindex="-1"></a>Other features such as <span class="in">`popular`</span>, <span class="in">`appealing`</span>, and <span class="in">`easy`</span> show more variation in their rankings depending on the method used—highlighting how different models capture different aspects of influence.</span>
+<span id="cb20-483"><a href="#cb20-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-484"><a href="#cb20-484" aria-hidden="true" tabindex="-1"></a>The combined analysis confirms a small set of robust predictors, while also revealing that feature importance can be sensitive to the assumptions and structure of the chosen method.</span>
+<span id="cb20-485"><a href="#cb20-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-486"><a href="#cb20-486" aria-hidden="true" tabindex="-1"></a><span class="fu">### Extended Comparison with Advanced Models</span></span>
+<span id="cb20-487"><a href="#cb20-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-488"><a href="#cb20-488" aria-hidden="true" tabindex="-1"></a>To complement the earlier methods, I explore additional model-based techniques for estimating feature importance. These include:</span>
+<span id="cb20-489"><a href="#cb20-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-490"><a href="#cb20-490" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**XGBoost**: A gradient-boosted tree ensemble model that outputs multiple importance metrics, such as gain and cover.</span>
+<span id="cb20-491"><a href="#cb20-491" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Multilayer Perceptron (MLP)**: A fully connected neural network, for which we calculate permutation-based importance to assess how sensitive the model is to each input feature.</span>
+<span id="cb20-492"><a href="#cb20-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-493"><a href="#cb20-493" aria-hidden="true" tabindex="-1"></a>These advanced models provide robustness checks and capture complex non-linear interactions that traditional methods may overlook.</span>
+<span id="cb20-494"><a href="#cb20-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-497"><a href="#cb20-497" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-498"><a href="#cb20-498" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span>
+<span id="cb20-499"><a href="#cb20-499" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPRegressor</span>
+<span id="cb20-500"><a href="#cb20-500" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.inspection <span class="im">import</span> permutation_importance</span>
+<span id="cb20-501"><a href="#cb20-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-502"><a href="#cb20-502" aria-hidden="true" tabindex="-1"></a>xgb_model <span class="op">=</span> xgb.XGBRegressor(n_estimators<span class="op">=</span><span class="dv">500</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb20-503"><a href="#cb20-503" aria-hidden="true" tabindex="-1"></a>xgb_model.fit(X, y)</span>
+<span id="cb20-504"><a href="#cb20-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-505"><a href="#cb20-505" aria-hidden="true" tabindex="-1"></a>xgb_importance <span class="op">=</span> pd.Series(xgb_model.feature_importances_, index<span class="op">=</span>X.columns)</span>
+<span id="cb20-506"><a href="#cb20-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-507"><a href="#cb20-507" aria-hidden="true" tabindex="-1"></a>xgb_importance_df <span class="op">=</span> xgb_importance.sort_values(ascending<span class="op">=</span><span class="va">False</span>).to_frame(<span class="st">"XGBoost Gain"</span>)</span>
+<span id="cb20-508"><a href="#cb20-508" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-509"><a href="#cb20-509" aria-hidden="true" tabindex="-1"></a>mlp <span class="op">=</span> MLPRegressor(hidden_layer_sizes<span class="op">=</span>(<span class="dv">100</span>,), max_iter<span class="op">=</span><span class="dv">1000</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb20-510"><a href="#cb20-510" aria-hidden="true" tabindex="-1"></a>mlp.fit(X, y)</span>
+<span id="cb20-511"><a href="#cb20-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-512"><a href="#cb20-512" aria-hidden="true" tabindex="-1"></a>perm <span class="op">=</span> permutation_importance(mlp, X, y, n_repeats<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb20-513"><a href="#cb20-513" aria-hidden="true" tabindex="-1"></a>mlp_importance <span class="op">=</span> pd.Series(perm.importances_mean, index<span class="op">=</span>X.columns).sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-514"><a href="#cb20-514" aria-hidden="true" tabindex="-1"></a>mlp_importance_df <span class="op">=</span> mlp_importance.to_frame(<span class="st">"MLP Permutation Importance"</span>)</span>
+<span id="cb20-515"><a href="#cb20-515" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-516"><a href="#cb20-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-517"><a href="#cb20-517" aria-hidden="true" tabindex="-1"></a>The table below summarizes these results:</span>
+<span id="cb20-518"><a href="#cb20-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-521"><a href="#cb20-521" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-522"><a href="#cb20-522" aria-hidden="true" tabindex="-1"></a>advanced_df <span class="op">=</span> pd.concat([xgb_importance_df, mlp_importance_df], axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb20-523"><a href="#cb20-523" aria-hidden="true" tabindex="-1"></a>advanced_df</span>
+<span id="cb20-524"><a href="#cb20-524" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-525"><a href="#cb20-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-526"><a href="#cb20-526" aria-hidden="true" tabindex="-1"></a>Advanced models further reinforce the role of a few key predictors. In the XGBoost model, <span class="in">`trust`</span> stands out with the highest gain score, followed by <span class="in">`impact`</span> and <span class="in">`service`</span>. These same features are also top-ranked in the MLP model, based on permutation importance.</span>
+<span id="cb20-527"><a href="#cb20-527" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-528"><a href="#cb20-528" aria-hidden="true" tabindex="-1"></a>While there are slight variations in ordering, the consistency across both linear and nonlinear methods—including tree ensembles and neural networks—underscores the robustness of these drivers in explaining satisfaction.</span>
+<span id="cb20-529"><a href="#cb20-529" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-530"><a href="#cb20-530" aria-hidden="true" tabindex="-1"></a><span class="fu">### Conclusion</span></span>
+<span id="cb20-531"><a href="#cb20-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-534"><a href="#cb20-534" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb20-535"><a href="#cb20-535" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb20-536"><a href="#cb20-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-537"><a href="#cb20-537" aria-hidden="true" tabindex="-1"></a>all_metrics_df <span class="op">=</span> pd.concat([summary_df, model_df, advanced_df], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-538"><a href="#cb20-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-539"><a href="#cb20-539" aria-hidden="true" tabindex="-1"></a>normalized_df <span class="op">=</span> all_metrics_df.copy()</span>
+<span id="cb20-540"><a href="#cb20-540" aria-hidden="true" tabindex="-1"></a>normalized_df <span class="op">=</span> normalized_df.<span class="bu">apply</span>(<span class="kw">lambda</span> col: (col <span class="op">-</span> col.<span class="bu">min</span>()) <span class="op">/</span> (col.<span class="bu">max</span>() <span class="op">-</span> col.<span class="bu">min</span>()))</span>
+<span id="cb20-541"><a href="#cb20-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-542"><a href="#cb20-542" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">7</span>))</span>
+<span id="cb20-543"><a href="#cb20-543" aria-hidden="true" tabindex="-1"></a>sns.heatmap(normalized_df.T, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>, fmt<span class="op">=</span><span class="st">".2f"</span>, linewidths<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-544"><a href="#cb20-544" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-545"><a href="#cb20-545" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Normalized Feature Importance Across 8 Methods"</span>)</span>
+<span id="cb20-546"><a href="#cb20-546" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Variable"</span>)</span>
+<span id="cb20-547"><a href="#cb20-547" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Importance Metric"</span>)</span>
+<span id="cb20-548"><a href="#cb20-548" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb20-549"><a href="#cb20-549" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb20-550"><a href="#cb20-550" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-551"><a href="#cb20-551" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-552"><a href="#cb20-552" aria-hidden="true" tabindex="-1"></a>Across all eight importance metrics—from classical correlation to modern machine learning techniques—<span class="in">`trust`</span> and <span class="in">`impact`</span> consistently emerge as the most influential predictors of customer satisfaction. These two variables dominate not only in statistical methods (e.g., Pearson correlation, standardized coefficients) but also in model-driven metrics like SHAP, Gini importance, and XGBoost gain.</span>
+<span id="cb20-553"><a href="#cb20-553" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-554"><a href="#cb20-554" aria-hidden="true" tabindex="-1"></a><span class="in">`Service`</span> also ranks highly in several methods, further supporting its role as a key driver. Meanwhile, features such as <span class="in">`differs`</span>, <span class="in">`rewarding`</span>, and <span class="in">`popular`</span> receive little to no importance across nearly all methods, suggesting minimal predictive value in this context.</span>
+<span id="cb20-555"><a href="#cb20-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-556"><a href="#cb20-556" aria-hidden="true" tabindex="-1"></a>Notably, the heatmap also reveals areas of model sensitivity. For instance, <span class="in">`rewarding`</span> scores very low in most methods but peaks under Johnson’s relative weights—highlighting how different models capture different aspects of importance.</span>
+<span id="cb20-557"><a href="#cb20-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-558"><a href="#cb20-558" aria-hidden="true" tabindex="-1"></a>Overall, the triangulation of insights across diverse methods reinforces confidence in the top features while also providing transparency around model-specific variance. This multi-method approach not only strengthens interpretability but also increases robustness in actionable recommendations.</span>
+<span id="cb20-559"><a href="#cb20-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-560"><a href="#cb20-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-561"><a href="#cb20-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-562"><a href="#cb20-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-563"><a href="#cb20-563" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
